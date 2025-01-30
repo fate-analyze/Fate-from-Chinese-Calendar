@@ -14,7 +14,8 @@ else ()
     message("CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
 endif ()
 
-add_subdirectory(eph)
-add_subdirectory(lunar)
-add_subdirectory(mylib)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
+
+add_subdirectory(src)
 add_subdirectory(test)
