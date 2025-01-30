@@ -43,6 +43,7 @@ test5
 .vscode/*
 .vs/*
 .idea/
+.github/
 
 # cmake build path
 build
