@@ -5,6 +5,7 @@
 #include "lunar_ssq.h"
 #include "mylib/math_patch.h"
 #include "mylib/tool.h"
+#include "util/DataUtil.h"
 
 namespace sxwnl {
 void init_ob()
@@ -20,11 +21,11 @@ OB_LUN yueLiCalc(int By, int Bm)
     int i, j, D, xn;
     //日历物件初始化
     Date JD = {By, Bm, 1, 12, 0, 0.1};
-    const int Bd0 = int2(date2Jd(JD)) - J2000;  //公历月首,中午
+    const int Bd0 = DataUtil::intFloor(date2Jd(JD)) - J2000;  //公历月首,中午
     JD.month_++;
     if (JD.month_ > 12)
         JD.year_++, JD.month_ = 1;
-    const int Bdn = int2(date2Jd(JD)) - J2000 - Bd0;  //本月天数(公历)
+    const int Bdn = DataUtil::intFloor(date2Jd(JD)) - J2000 - Bd0;  //本月天数(公历)
 
     OB_LUN lun;
     lun.week0_ = (Bd0 + J2000 + 1 + 7000000) % 7;  //本月第一天的星期
@@ -39,22 +40,22 @@ OB_LUN yueLiCalc(int By, int Bm)
     //提取各日信息
     for (i = 0, j = 0; i < Bdn; i++) {
         ob = &lun.day[i];
-        ob->d0 = Bd0 + i;                                  //儒略日,北京时12:00
-        ob->di = i;                                        //公历月内日序数
-        ob->y = By;                                        //公历年
-        ob->m = Bm;                                        //公历月
-        ob->dn = Bdn;                                      //公历月天数
-        ob->week0 = lun.week0_;                            //月首的星期
-        ob->week = (lun.week0_ + i) % 7;                   //当前日的星期
-        ob->weeki = int2((lun.week0_ + i) / 7);            //本日所在的周序号
-        ob->weekN = int2((lun.week0_ + Bdn - 1) / 7) + 1;  //本月的总周数
+        ob->d0 = Bd0 + i;                                                //儒略日,北京时12:00
+        ob->di = i;                                                      //公历月内日序数
+        ob->y = By;                                                      //公历年
+        ob->m = Bm;                                                      //公历月
+        ob->dn = Bdn;                                                    //公历月天数
+        ob->week0 = lun.week0_;                                          //月首的星期
+        ob->week = (lun.week0_ + i) % 7;                                 //当前日的星期
+        ob->weeki = DataUtil::intFloor((lun.week0_ + i) / 7);            //本日所在的周序号
+        ob->weekN = DataUtil::intFloor((lun.week0_ + Bdn - 1) / 7) + 1;  //本月的总周数
         JD = jd2Date(ob->d0 + J2000);
         ob->d = JD.day_;  //公历日名称
 
         //农历月历
         if (!SSQ::ZQ[0] || ob->d0 < SSQ::ZQ[0] || ob->d0 >= SSQ::ZQ[24])  //如果d0已在计算农历范围内则不再计算
             SSQ::calcY(ob->d0);
-        int mk = int2((ob->d0 - SSQ::HS[0]) / 30.0);
+        int mk = DataUtil::intFloor((ob->d0 - SSQ::HS[0]) / 30.0);
         if (mk < 13 && SSQ::HS[mk + 1] <= ob->d0)
             mk++;  //农历所在月的序数
 
@@ -79,7 +80,7 @@ OB_LUN yueLiCalc(int By, int Bm)
             ob->Lleap = ob2->Lleap;
             ob->Lmc2 = ob2->Lmc2;
         }
-        int qk = int2((ob->d0 - SSQ::ZQ[0] - 7) / 15.2184);
+        int qk = DataUtil::intFloor((ob->d0 - SSQ::ZQ[0] - 7) / 15.2184);
         if (qk < 23 && ob->d0 >= SSQ::ZQ[qk + 1])
             qk++;  //节气的取值范围是0-23
         if (ob->d0 == SSQ::ZQ[qk])
@@ -116,11 +117,11 @@ OB_LUN yueLiCalc(int By, int Bm)
         ob->Lyear4 = ob->Lyear0 + 1984 + 2698;  //黄帝纪年
 
         //纪月处理,1998年12月7(大雪)开始连续进行节气计数,0为甲子
-        mk = int2((ob->d0 - SSQ::ZQ[0]) / 30.43685);
+        mk = DataUtil::intFloor((ob->d0 - SSQ::ZQ[0]) / 30.43685);
         if (mk < 12 && ob->d0 >= SSQ::ZQ[2 * mk + 1])
             mk++;  //相对大雪的月数计算,mk的取值范围0-12
 
-        D = mk + int2((SSQ::ZQ[12] + 390) / 365.2422) * 12 + 900000;  //相对于1998年12月7(大雪)的月数,900000为正数基数
+        D = mk + DataUtil::intFloor((SSQ::ZQ[12] + 390) / 365.2422) * 12 + 900000;  //相对于1998年12月7(大雪)的月数,900000为正数基数
         ob->Lmonth = D % 12;
         ob->Lmonth2 = str_gan[D % 10];
         ob->Lmonth2 += str_zhi[D % 12];
@@ -131,7 +132,7 @@ OB_LUN yueLiCalc(int By, int Bm)
         ob->Lday2 += str_zhi[D % 12];
 
         //星座
-        mk = int2((ob->d0 - SSQ::ZQ[0] - 15) / 30.43685);
+        mk = DataUtil::intFloor((ob->d0 - SSQ::ZQ[0] - 15) / 30.43685);
         if (mk < 11 && ob->d0 >= SSQ::ZQ[2 * mk + 2])
             mk++;  //星座所在月的序数,(如果j=13,ob->d0不会超过第14号中气)
         ob->XiZ = str_xz[(mk + 12) % 12];
@@ -147,11 +148,11 @@ OB_LUN yueLiCalc(int By, int Bm)
     double d, jd2 = Bd0 + dt_T(Bd0) - 8 / 24.0;
     //月相查找
     double w = MS_aLon(jd2 / 36525, 10, 3);
-    w = int2((w - 0.78) / M_PI * 2) * M_PI / 2;
+    w = DataUtil::intFloor((w - 0.78) / M_PI * 2) * M_PI / 2;
     do {
         d = OBB::so_accurate(w);
-        D = int2(d + 0.5);
-        xn = int2(w / pi2 * 4 + 4000000.01) % 4;
+        D = DataUtil::intFloor(d + 0.5);
+        xn = DataUtil::intFloor(w / pi2 * 4 + 4000000.01) % 4;
         w += pi2 / 4;
         if (D >= Bd0 + Bdn)
             break;
@@ -165,11 +166,11 @@ OB_LUN yueLiCalc(int By, int Bm)
 
     //节气查找
     w = S_aLon(jd2 / 36525, 3);
-    w = int2((w - 0.13) / pi2 * 24) * pi2 / 24;
+    w = DataUtil::intFloor((w - 0.13) / pi2 * 24) * pi2 / 24;
     do {
         d = OBB::qi_accurate(w);
-        D = int2(d + 0.5);
-        xn = int2(w / pi2 * 24 + 24000006.01) % 24;
+        D = DataUtil::intFloor(d + 0.5);
+        xn = DataUtil::intFloor(w / pi2 * 24 + 24000006.01) % 24;
         w += pi2 / 24.0;
         if (D >= Bd0 + Bdn)
             break;
@@ -187,7 +188,7 @@ std::string nianLiSTR(const int y)
 {  //字符串年历生成
     std::string s = "", s1;
     double qi = 0;
-    SSQ::calcY(int2((y - 2000.0) * 365.2422 + 180));
+    SSQ::calcY(DataUtil::intFloor((y - 2000.0) * 365.2422 + 180));
     for (int i = 0; i < 14; i++) {
         if (SSQ::HS[i + 1] > SSQ::ZQ[24])
             break;  //已包含下一年的冬至
@@ -203,7 +204,7 @@ std::string nianLiSTR(const int y)
 
         double v = OBB::so_accurate2(SSQ::HS[i]);
         std::string s2 = "(" + JD2str(v + J2000).substr(9, 11) + ")";
-        if (int2(v + 0.5) != SSQ::HS[i])
+        if (DataUtil::intFloor(v + 0.5) != SSQ::HS[i])
             s2 = "\033[31m" + s2 + "\033[0m";
         // s2+="\n";
         //v=(v+0.5+J2000)%1; if(v>0.5) v=1-v; if(v<8/1440) s2 = "<u>"+s2+"</u>"; //对靠近0点的加注
@@ -224,7 +225,7 @@ std::string nianLiSTR(const int y)
 
             v = OBB::qi_accurate2(qi);
             s2 = "(" + JD2str(v + J2000).substr(9, 11) + ")";
-            if (int2(v + 0.5) != qi)
+            if (DataUtil::intFloor(v + 0.5) != qi)
                 s2 = "\033[31m" + s2 + "\033[0m";
             //v=(v+0.5+J2000)%1; if(v>0.5) v=1-v; if(v<8/1440) s2 = "<u>"+s2+"</u>"; //对靠近0点的加注
             s1 += s2;
@@ -237,19 +238,19 @@ std::string nianLiSTR(const int y)
 Bazi jb2Bazi(const Date &date, const double lng)
 {
     auto jd = date2Jd(date);
-    jd = jd + (-8.0) / 24 - J2000;                             // 格林尼治UT(J2000起算)
-    const double jd2 = jd + dt_T(jd);                          // 力学时
-    const double w = S_aLon(jd2 / 36525.0, -1);                // 此刻太阳视黄经
-    const int k = int2((w / pi2 * 360 + 45 + 15 * 360) / 30);  // 1984年立春起算的节气数(不含中气)
-    jd += pty_zty2(jd2 / 36525) + lng / radd / M_PI / 2;       // 本地真太阳时(使用低精度算法计算时差)
+    jd = jd + (-8.0) / 24 - J2000;                                           // 格林尼治UT(J2000起算)
+    const double jd2 = jd + dt_T(jd);                                        // 力学时
+    const double w = S_aLon(jd2 / 36525.0, -1);                              // 此刻太阳视黄经
+    const int k = DataUtil::intFloor((w / pi2 * 360 + 45 + 15 * 360) / 30);  // 1984年立春起算的节气数(不含中气)
+    jd += pty_zty2(jd2 / 36525) + lng / radd / M_PI / 2;                     // 本地真太阳时(使用低精度算法计算时差)
 
     Bazi ob;
     ob.bz_zty = timeStr(jd);
     jd += 13.0 / 24;          //转为前一日23点起算(原jd为本日中午12点起算)
     const int D = floor(jd);  //日数与时辰
-    const int SC = int2((jd - D) * 12);
+    const int SC = DataUtil::intFloor((jd - D) * 12);
 
-    int v = int2(k / 12.0 + 6000000);
+    int v = DataUtil::intFloor(k / 12.0 + 6000000);
     ob.bz_jn = std::string(str_gan[v % 10]) + str_zhi[v % 12];
     v = k + 2 + 60000000;
     ob.bz_jy = std::string(str_gan[v % 10]) + str_zhi[v % 12];

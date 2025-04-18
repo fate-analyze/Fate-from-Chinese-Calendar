@@ -2,12 +2,9 @@
 #include <cstring>
 #include "eph_data.h"
 #include "mylib/math_patch.h"
+#include "util/DataUtil.h"
 
 namespace sxwnl {
-static int int2(double v)
-{
-    return (int)floor(v);
-};
 
 static double preceTab_IAU1976[] = {IAU1976_DATA};
 static double preceTab_IAU2000[] = {IAU2000_DATA};
@@ -371,7 +368,7 @@ double XL0_calc(int xt, int zn, double t, int n)
         if (n < 0)
             N = n2;  //确定项数
         else {
-            N = int2(3 * n * n0 / N0 + 0.5) + n1;
+            N = DataUtil::intFloor(3 * n * n0 / N0 + 0.5) + n1;
             if (i)
                 N += 3;
             if (N > n2)
@@ -423,7 +420,7 @@ std::array<double, 3> pluto_coord(double t)
             v *= x;
         if (i % 3 == 2)
             v *= x * x;
-        r[int2(i / 3)] += v / 100000000;
+        r[DataUtil::intFloor(i / 3)] += v / 100000000;
     }
     p[0] = r[0] += 9.922274 + 0.154154 * x;
     p[1] = r[1] += 10.016090 + 0.064073 * x;
@@ -481,7 +478,7 @@ double XL1_calc(int zn, double t, int n)
         n = len_M[zn][0];
     for (int i = 0; i < len0[zn]; i++, tn *= t) {
         double *F = ob[i];
-        int N = int2(n * len_M[zn][i] / len_M[zn][0] + 0.5);
+        int N = DataUtil::intFloor(n * len_M[zn][i] / len_M[zn][0] + 0.5);
         if (i)
             N += 6;
         if (N >= len_M[zn][i])
@@ -632,7 +629,7 @@ std::array<double, 2> moonMinR(double t, bool min)
         b = -10.3302 / 36525;
     else
         b = 3.4471 / 36525;
-    t = b + a * int2((t - b) / a + 0.5);  //平近(远)点时间
+    t = b + a * DataUtil::intFloor((t - b) / a + 0.5);  //平近(远)点时间
     //初算二次
     double dt = 2.0 / 36525;
     double r1 = XL1_calc(2, t - dt, 10);
@@ -661,7 +658,7 @@ std::array<double, 2> moonNode(double t, double asc)
         b = 21.0 / 36525;
     else
         b = 35.0 / 36525;
-    t = b + a * int2((t - b) / a + 0.5);  //平升(降)交点时间
+    t = b + a * DataUtil::intFloor((t - b) / a + 0.5);  //平升(降)交点时间
     double dt = 0.5 / 36525;
     double w = XL1_calc(1, t, 10);
     double w2 = XL1_calc(1, t + dt, 10);
@@ -684,7 +681,7 @@ std::array<double, 2> earthMinR(double t, bool min)
         b = 1.7 / 36525;
     else
         b = 184.5 / 36525;
-    t = b + a * int2((t - b) / a + 0.5);  //平近(远)点时间
+    t = b + a * DataUtil::intFloor((t - b) / a + 0.5);  //平近(远)点时间
     //初算二次
     double dt = 3.0 / 36525;
     double r1 = XL0_calc(0, 2, t - dt, 10);
@@ -709,7 +706,7 @@ std::array<double, 2> earthMinR(double t, bool min)
 /*=============一些天文基本问题==============*/
 int suoN(double jd)
 {  //返回朔日的编号,jd应在朔日附近，允许误差数天
-    return int2((jd + 8) / 29.5306);
+    return DataUtil::intFloor((jd + 8) / 29.5306);
 }
 
 double sunShengJ(double jd, double L, double fa, int sj)

@@ -3,6 +3,7 @@
 #include "eph0.h"
 #include "mylib/mystl/my_string.h"
 #include "mylib/tool.h"
+#include "util/DataUtil.h"
 
 namespace sxwnl {
 //大距计算
@@ -43,7 +44,7 @@ std::array<double, 2> daJu(int xt, double t, bool dx)
         b = c[3] / 36525.0;
     else
         b = c[4] / 36525.0;
-    t = b + a * int2((t - b) / a + 0.5);  //大距平时间
+    t = b + a * DataUtil::intFloor((t - b) / a + 0.5);  //大距平时间
     double r1 = 0, r2 = 0, r3 = 0;
     for (int i = 0; i < 3; i++) {
         double dt = c[i] / 36525.0;

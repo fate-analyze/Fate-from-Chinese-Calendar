@@ -2,7 +2,7 @@
 #define API_BAZI_H
 
 #include <string>
-#include "time_geo.h"
+#include "TimeGeo.h"
 
 namespace sxwnl {
 

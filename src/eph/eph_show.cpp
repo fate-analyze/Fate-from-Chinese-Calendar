@@ -13,6 +13,7 @@
 #include "mylib/lat_lon_data.h"
 #include "mylib/mystl/my_string.h"
 #include "mylib/tool.h"
+#include "util/DataUtil.h"
 
 namespace sxwnl {
 
@@ -123,8 +124,8 @@ std::string rs_search(int Y, int M, int n, bool fs)
     //查找日食
     int i, k;
     std::string s = "", s2 = "";
-    double jd = date2Jd({Y, M, 1, 0, 0, 0}) - J2000;                 //取屏幕时间
-    jd = MS_aLon_t2(int2((jd + 8) / 29.5306) * _pi * 2) * 36525;  //定朔
+    double jd = date2Jd({Y, M, 1, 0, 0, 0}) - J2000;                            //取屏幕时间
+    jd = MS_aLon_t2(DataUtil::intFloor((jd + 8) / 29.5306) * _pi * 2) * 36525;  //定朔
     for (i = 0, k = 0; i < n; i++) {
         _ECFAST r = ecFast(jd);  //低精度高速搜索
         if (r.lx == "NN") {
@@ -168,7 +169,7 @@ std::string rs2_calc(uint8_t fs, double jd0, double step)
         jd -= step;
     if (fs == 4)
         jd += step;
-    jd = MS_aLon_t2(int2((jd + 8) / 29.5306) * _pi * 2) * 36525.0;  //归朔
+    jd = MS_aLon_t2(DataUtil::intFloor((jd + 8) / 29.5306) * _pi * 2) * 36525.0;  //归朔
     //Cp10_jd.value = Cp10_jd2.value = (jd+J2000),6);    //保存在屏幕上
     std::cout << JD2str(jd + J2000) << std::endl;  //显示时间串
 
@@ -236,9 +237,9 @@ std::string rs2_calc(uint8_t fs, double jd0, double step)
 }
 
 std::string rs2_jxb()
-{                                                                 //显示界线表
-    double jd = 2454679.926741 - J2000;                           //取屏幕时间
-    jd = MS_aLon_t2(int2((jd + 8) / 29.5306) * _pi * 2) * 36525;  //归朔
+{                                                                               //显示界线表
+    double jd = 2454679.926741 - J2000;                                         //取屏幕时间
+    jd = MS_aLon_t2(DataUtil::intFloor((jd + 8) / 29.5306) * _pi * 2) * 36525;  //归朔
     RS_GS::init(jd, 7);
 
     return RS_GS::jieX3(jd);

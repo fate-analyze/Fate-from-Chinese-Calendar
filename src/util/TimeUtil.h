@@ -1,5 +1,5 @@
 // ===============================
-// Copyright (c) 2025$ $ORGANIZATION_NAME$
+// Copyright (c) 2025 $ORGANIZATION_NAME$
 // File: TimeUtil.h
 // Updated: 2025/4/18
 // Author: xum
@@ -8,11 +8,15 @@
 #ifndef TIMEUTIL_H
 #define TIMEUTIL_H
 
+#include "TimeGeo.h"
+
 namespace sxwnl {
 
 class TimeUtil {
-
+public:
+    static double date2Jd(const Date &date);
+    static Date jd2Date(double jd);
 };
-}
+}  // namespace sxwnl
 
-#endif //TIMEUTIL_H
+#endif  //TIMEUTIL_H

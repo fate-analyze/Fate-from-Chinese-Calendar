@@ -15,8 +15,9 @@ API测试
 #include "eph/eph_show.h"
 #include "lunar/lunar.h"
 #include "mylib/lat_lon_data.h"
-#include "mylib/tool.h"
 #include "mylib/mystl/my_string.h"
+#include "mylib/tool.h"
+#include "util/DataUtil.h"
 
 using namespace sxwnl;
 
@@ -168,7 +169,7 @@ void suoCalc(int y, int n = 24, int jiao = 0)
     int i;
     double r, T;
     std::string s = "月-日黄经差" + std::to_string(jiao) + "\n", s2 = "";
-    int n0 = int2(y * (365.2422 / 29.53058886));  //截止当年首经历朔望的个数
+    int n0 = DataUtil::intFloor(y * (365.2422 / 29.53058886));  //截止当年首经历朔望的个数
     for (i = 0; i < n; i++) {
         T = MS_aLon_t((n0 + i + jiao / 360.0) * 2 * M_PI);  //精确时间计算,入口参数是当年各朔望黄经
         r = XL1_calc(2, T, -1);                             //计算月亮
@@ -230,7 +231,7 @@ void dingQi_cmp(int y = 2000, int N = 10)
     for (i = 0; i < N; i++) {
         W = (y + i / 24) * 2 * M_PI;
         T = S_aLon_t2(W) - S_aLon_t(W);  //节气粗算与精算的差异
-        T = int2(abs(T * 36525 * 86400));
+        T = DataUtil::intFloor(abs(T * 36525 * 86400));
         if (T > maxT)
             maxT = T;
     }
@@ -244,11 +245,11 @@ void dingSuo_cmp(int y = 2000, int N = 10)
     y -= 2000;
     int i;
     double T, maxT = 0, W;
-    int n = int2(y * (365.2422 / 29.53058886));  //截止当年首经历朔望的个数
+    int n = DataUtil::intFloor(y * (365.2422 / 29.53058886));  //截止当年首经历朔望的个数
     for (i = 0; i < N; i++) {
         W = (n + i / 24.0) * 2 * M_PI;
         T = MS_aLon_t2(W) - MS_aLon_t(W);  //合塑粗算与精算的差异
-        T = int2(abs(T * 36525 * 86400));
+        T = DataUtil::intFloor(abs(T * 36525 * 86400));
         if (T > maxT)
             maxT = T;
     }
@@ -295,7 +296,7 @@ void ML_calc(Date dat)
     auto ob = jb2Bazi(dat, jw.J);  //八字计算
 
     std::cout << "\033[31;1m[日标]：\033[0m" << "公历 " << dat.year_ << "-" << dat.month_ << "-" << dat.day_ << " 儒略日数 "
-              << int2(jd + 0.5) << " 距2000年首" << int2(jd + 0.5 - J2000) << "日\n"
+              << DataUtil::intFloor(jd + 0.5) << " 距2000年首" << DataUtil::intFloor(jd + 0.5 - J2000) << "日\n"
               << "\033[31;1m[八字]：\033[0m" << ob.bz_jn << "年 " << ob.bz_jy << "月 " << ob.bz_jr << "日 " << ob.bz_js
               << "时 真太阳 \033[31m" << ob.bz_zty << "\033[0m"
               << "\n\033[1;32m[纪时]：\033[0m" << ob.bz_JS << "\n"

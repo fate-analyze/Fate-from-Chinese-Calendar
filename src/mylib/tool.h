@@ -4,15 +4,11 @@
 #include <cstdlib>
 #include <string>
 #include "mylib/math_patch.h"
-#include "time_geo.h"
+#include "TimeGeo.h"
 
 #define A2R(x) ((x) / 180 * M_PI)
 
 namespace sxwnl {
-inline int int2(double v)
-{
-    return (int)floor(v);
-};
 
 void string_replace(std::string &strBig, const std::string &strsrc, const std::string &strdst);
 std::string timeStr(double jd);

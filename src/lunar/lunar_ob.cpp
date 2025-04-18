@@ -2,7 +2,7 @@
 #include "bazi.h"
 #include "eph/eph0.h"
 #include "mylib/math_patch.h"
-#include "mylib/tool.h"
+#include "util/DataUtil.h"
 
 using namespace sxwnl;
 
@@ -176,12 +176,12 @@ void OBA::getHuiLi(double d0, OB_DAY &r)
     //回历计算
     //以下算法使用Excel测试得到,测试时主要关心年临界与月临界
     double d = d0 + 503105;
-    int z = int2(d / 10631);  //10631为一周期(30年)
+    int z = DataUtil::intFloor(d / 10631);  //10631为一周期(30年)
     d -= z * 10631;
-    int y = int2((d + 0.5) / 354.366);  //加0.5的作用是保证闰年正确(一周中的闰年是第2,5,7,10,13,16,18,21,24,26,29年)
-    d -= int2(y * 354.366 + 0.5);
-    int m = int2((d + 0.11) / 29.51);  //分子加0.11,分母加0.01的作用是第354或355天的的月分保持为12月(m=11)
-    d -= int2(m * 29.5 + 0.5);
+    int y = DataUtil::intFloor((d + 0.5) / 354.366);  //加0.5的作用是保证闰年正确(一周中的闰年是第2,5,7,10,13,16,18,21,24,26,29年)
+    d -= DataUtil::intFloor(y * 354.366 + 0.5);
+    int m = DataUtil::intFloor((d + 0.11) / 29.51);  //分子加0.11,分母加0.01的作用是第354或355天的的月分保持为12月(m=11)
+    d -= DataUtil::intFloor(m * 29.5 + 0.5);
     r.Hyear = z * 30 + y + 1;
     r.Hmonth = m + 1;
     r.Hday = d + 1;
@@ -314,7 +314,7 @@ void OBB::getDayName2(OB_DAY &r)
     std::string w;
     if (r.cur_dz >= 0 && r.cur_dz < 81) {
         //数九
-        w = str_num[int2(r.cur_dz / 9) + 1];
+        w = str_num[DataUtil::intFloor(r.cur_dz / 9) + 1];
         if (r.cur_dz % 9 == 0)
             r.B += "『" + w + "九』 ";
         else

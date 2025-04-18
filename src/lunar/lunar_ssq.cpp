@@ -1,14 +1,14 @@
+#include "lunar_ssq.h"
 #include <cstring>
-
+#include <string>
 #include "eph/eph0.h"
 #include "lunar_ob.h"
-#include "lunar_ssq.h"
 #include "mylib/math_patch.h"
 #include "mylib/tool.h"
+#include "util/DataUtil.h"
 
 using namespace sxwnl;
 
-#define int2(v) ((int)floor(v))
 /************************
   实气实朔计算器
   适用范围 -722年2月22日——1959年12月
@@ -256,11 +256,11 @@ int SSQ::calc(double jd, int qs)
         // 定气或定朔
         if (qs) {
             D = floor(qi_low(floor((jd + pc - 2451259) / 365.2422 * 24) * M_PI / 12)
-                      + 0.5);                             // 2451259是1999.3.21,太阳视黄经为0,春分.定气计算
-            n = str_qs[int2((jd - f2) / 365.2422 * 24)];  // 找定气修正值
+                      + 0.5);                                           // 2451259是1999.3.21,太阳视黄经为0,春分.定气计算
+            n = str_qs[DataUtil::intFloor((jd - f2) / 365.2422 * 24)];  // 找定气修正值
         } else {
             D = floor(so_low(floor((jd + pc - 2451551) / 29.5306) * M_PI * 2) + 0.5);  // 2451551是2000.1.7的那个朔日,黄经差为0.定朔计算
-            n = str_qs[int2((jd - f2) / 29.5306)];                                     // 找定朔修正值
+            n = str_qs[DataUtil::intFloor((jd - f2) / 29.5306)];                       // 找定朔修正值
         }
         if (n == '1')
             return D + 1;
@@ -284,7 +284,7 @@ void SSQ::calcY(double jd)
     int *A = ZQ, *B = HS;  //中气表,日月合朔表(整日)
 
     //该年的气
-    double W = int2((jd - 355 + 183) / 365.2422) * 365.2422 + 355;  //355是2000.12冬至,得到较靠近jd的冬至估计值
+    double W = DataUtil::intFloor((jd - 355 + 183) / 365.2422) * 365.2422 + 355;  //355是2000.12冬至,得到较靠近jd的冬至估计值
     if (calc(W, 1) > jd)
         W -= 365.2422;
     for (int i = 0; i < 25; i++) {
@@ -312,7 +312,7 @@ void SSQ::calcY(double jd)
     }
 
     //-721年至-104年的后九月及月建问题,与朔有关，与气无关
-    int YY = int2((ZQ[0] + 10 + 180) / 365.2422) + 2000;  //确定年份
+    int YY = DataUtil::intFloor((ZQ[0] + 10 + 180) / 365.2422) + 2000;  //确定年份
     if (YY >= -721 && YY <= -104) {
         int ns[9] = {};
         const char *str[] = {"十三", "后九"};
@@ -320,13 +320,13 @@ void SSQ::calcY(double jd)
             int yy = YY + i - 1;
             //颁行历年首, 闰月名称, 月建
             if (yy >= -721)
-                ns[i] = calc(1457698 - J2000 + int2(0.342 + (yy + 721) * 12.368422) * 29.5306, 0), ns[i + 3] = 0,
+                ns[i] = calc(1457698 - J2000 + DataUtil::intFloor(0.342 + (yy + 721) * 12.368422) * 29.5306, 0), ns[i + 3] = 0,
                 ns[i + 6] = 2;  //春秋历,ly为-722.12.17
             if (yy >= -479)
-                ns[i] = calc(1546083 - J2000 + int2(0.500 + (yy + 479) * 12.368422) * 29.5306, 0), ns[i + 3] = 0,
+                ns[i] = calc(1546083 - J2000 + DataUtil::intFloor(0.500 + (yy + 479) * 12.368422) * 29.5306, 0), ns[i + 3] = 0,
                 ns[i + 6] = 2;  //战国历,ly为-480.12.11
             if (yy >= -220)
-                ns[i] = calc(1640641 - J2000 + int2(0.866 + (yy + 220) * 12.369000) * 29.5306, 0), ns[i + 3] = 1,
+                ns[i] = calc(1640641 - J2000 + DataUtil::intFloor(0.866 + (yy + 220) * 12.369000) * 29.5306, 0), ns[i + 3] = 1,
                 ns[i + 6] = 11;  //秦汉历,ly为-221.10.31
         }
         int nn;
@@ -334,7 +334,7 @@ void SSQ::calcY(double jd)
             for (nn = 2; nn >= 0; nn--)
                 if (HS[i] >= ns[nn])
                     break;
-            int f1 = int2((HS[i] - ns[nn] + 15) / 29.5306);  //该月积数
+            int f1 = DataUtil::intFloor((HS[i] - ns[nn] + 15) / 29.5306);  //该月积数
             if (f1 < 12)
                 SSQ::ym[i] = str_ymc[(f1 + ns[nn + 6]) % 12];
             else

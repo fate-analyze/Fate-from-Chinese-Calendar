@@ -3,6 +3,7 @@
 #include "eph0.h"
 #include "mylib/math_patch.h"
 #include "mylib/tool.h"
+#include "util/DataUtil.h"
 
 using namespace sxwnl;
 
@@ -170,13 +171,13 @@ void SZJ::calcRTS(double jd, int n, double Jdl, double Wdl, double sq)
             SZJ::rts[i].sj = timeStr(r.j - r.s - 0.5);  //昼长
         }
         r = SZJ::Mt(jd + i + sq);  //月亮
-        int c = int2(r.s - sq + 0.5) - jd;
+        int c = DataUtil::intFloor(r.s - sq + 0.5) - jd;
         if (c >= 0 && c < n)
             SZJ::rts[c].Ms = timeStr(r.s - sq);
-        c = int2(r.z - sq + 0.5) - jd;
+        c = DataUtil::intFloor(r.z - sq + 0.5) - jd;
         if (c >= 0 && c < n)
             SZJ::rts[c].Mz = timeStr(r.z - sq);
-        c = int2(r.j - sq + 0.5) - jd;
+        c = DataUtil::intFloor(r.j - sq + 0.5) - jd;
         if (c >= 0 && c < n)
             SZJ::rts[c].Mj = timeStr(r.j - sq);
     }
