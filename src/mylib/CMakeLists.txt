@@ -1,6 +1,4 @@
-file(GLOB SRCS "*.cpp")
-
-add_library(mylib ${SRCS})
-target_include_directories(mylib PUBLIC
-        .
+add_library(${PROJECT_NAME}_mylib OBJECT
+        lat_lon_data.cpp
+        tool.cpp
 )

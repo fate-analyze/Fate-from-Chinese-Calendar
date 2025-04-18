@@ -3,7 +3,6 @@
 API测试
 2018-8-28
 */
-#include <mystl/my_string.h>
 #include <array>
 #include <chrono>
 #include <ctime>
@@ -17,6 +16,7 @@ API测试
 #include "lunar/lunar.h"
 #include "mylib/lat_lon_data.h"
 #include "mylib/tool.h"
+#include "mylib/mystl/my_string.h"
 
 using namespace sxwnl;
 
@@ -39,8 +39,8 @@ void tianXiang(int xm, int xm2, Date dat, int n = 10)
     std::string s = "";
     int i;
     double re0;
-    std::array<double, 2> re;
-    std::array<double, 4> re2;
+    std::array<double, 2> re {};
+    std::array<double, 4> re2 {};
     jd /= 36525.0;
     if (xm == 1 || xm == 2) {
         //求月亮近远点

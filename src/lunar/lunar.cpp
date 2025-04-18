@@ -183,7 +183,7 @@ OB_LUN yueLiCalc(int By, int Bm)
     return lun;
 }
 
-std::string nianLiSTR(int y)
+std::string nianLiSTR(const int y)
 {  //字符串年历生成
     std::string s = "", s1;
     double qi = 0;
@@ -234,7 +234,7 @@ std::string nianLiSTR(int y)
     return s;
 }
 
-Bazi jb2Bazi(const Date &date, double lng)
+Bazi jb2Bazi(const Date &date, const double lng)
 {
     auto jd = date2Jd(date);
     jd = jd + (-8.0) / 24 - J2000;                             // 格林尼治UT(J2000起算)

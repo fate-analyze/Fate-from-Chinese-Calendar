@@ -1,6 +1,5 @@
-file(GLOB SRCS "*.cpp")
-
-add_library(lunar ${SRCS})
-target_include_directories(lunar PUBLIC
-        .
+add_library(${PROJECT_NAME}_lunar OBJECT
+        lunar.cpp
+        lunar_ob.cpp
+        lunar_ssq.cpp
 )
