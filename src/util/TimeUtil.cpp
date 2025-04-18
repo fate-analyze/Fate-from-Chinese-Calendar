@@ -32,30 +32,35 @@ double TimeUtil::date2Jd(const Date &date)
 
 Date TimeUtil::jd2Date(double jd)
 {
-    Date r = {0};
-    int D = DataUtil::intFloor(jd + 0.5), c;
-    double F = jd + 0.5 - D;  //取得日数的整数部份A及小数部分F
-    if (D >= 2299161)
-        c = DataUtil::intFloor((D - 1867216.25) / 36524.25), D += 1 + c - DataUtil::intFloor(c / 4.0);
-    D += 1524;
-    r.year_ = DataUtil::intFloor((D - 122.1) / 365.25);  //年数
-    D -= DataUtil::intFloor(365.25 * r.year_);
-    r.month_ = DataUtil::intFloor(D / 30.601);  //月数
-    D -= DataUtil::intFloor(30.601 * r.month_);
-    r.day_ = D;  //日数
-    if (r.month_ > 13)
-        r.month_ -= 13, r.year_ -= 4715;
-    else
-        r.month_ -= 1, r.year_ -= 4716;
+    jd += 0.5;
+    int Z = static_cast<int>(jd);
+    double F = jd - Z;
 
-    //日的小数转为时分秒
+    int A;
+    if (Z >= 2299161) {
+        A = DataUtil::intFloor((Z - 1867216.25) / 36524.25);
+        A = Z + 1 + A - DataUtil::intFloor(A / 4);
+    } else {
+        A = Z;
+    }
+
+    int B = A + 1524;
+    double C = DataUtil::intFloor((B - 122.1) / 365.25);
+    double D = DataUtil::intFloor(365.25 * C);
+    int days = B - D + DataUtil::intFloor((B - D) / 30.6001);
+
+    Date result {};
+    result.month_ = days < 14 ? days - 1 : days - 13;
+    result.year_ = static_cast<int>(result.month_ > 2 ? C - 4716 : C - 4715);
+    result.day_ = days - static_cast<int>(30.6001 * (result.month_ - 1));
+
+    // 处理时间部分
     F *= 24.0;
-    r.hour_ = DataUtil::intFloor(F);
-    F -= r.hour_;
+    result.hour_ = static_cast<int>(F);
+    F -= result.hour_;
     F *= 60.0;
-    r.min_ = DataUtil::intFloor(F);
-    F -= r.min_;
-    F *= 60.0;
-    r.sec_ = F;
-    return r;
+    result.min_ = static_cast<int>(F);
+    F -= result.min_;
+    result.sec_ = static_cast<int>(std::round(F * 60.0));
+    return result;
 }
