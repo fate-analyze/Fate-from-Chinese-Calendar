@@ -162,23 +162,23 @@ void SZJ::calcRTS(double jd, int n, double Jdl, double Wdl, double sq)
     for (i = -1; i <= n; i++) {
         if (i >= 0 && i < n) {  //太阳
             r = SZJ::St(jd + i + sq);
-            SZJ::rts[i].s = timeStr(r.s - sq);          //升
-            SZJ::rts[i].z = timeStr(r.z - sq);          //中
-            SZJ::rts[i].j = timeStr(r.j - sq);          //降
-            SZJ::rts[i].c = timeStr(r.c - sq);          //晨
-            SZJ::rts[i].h = timeStr(r.h - sq);          //昏
-            SZJ::rts[i].ch = timeStr(r.h - r.c - 0.5);  //光照时间,timeStr()内部+0.5,所以这里补上-0.5
-            SZJ::rts[i].sj = timeStr(r.j - r.s - 0.5);  //昼长
+            SZJ::rts[i].s = DataUtil::jd2hour(r.s - sq);          //升
+            SZJ::rts[i].z = DataUtil::jd2hour(r.z - sq);          //中
+            SZJ::rts[i].j = DataUtil::jd2hour(r.j - sq);          //降
+            SZJ::rts[i].c = DataUtil::jd2hour(r.c - sq);          //晨
+            SZJ::rts[i].h = DataUtil::jd2hour(r.h - sq);          //昏
+            SZJ::rts[i].ch = DataUtil::jd2hour(r.h - r.c - 0.5);  //光照时间,DataUtil::jd2hour()内部+0.5,所以这里补上-0.5
+            SZJ::rts[i].sj = DataUtil::jd2hour(r.j - r.s - 0.5);  //昼长
         }
         r = SZJ::Mt(jd + i + sq);  //月亮
         int c = DataUtil::intFloor(r.s - sq + 0.5) - jd;
         if (c >= 0 && c < n)
-            SZJ::rts[c].Ms = timeStr(r.s - sq);
+            SZJ::rts[c].Ms = DataUtil::jd2hour(r.s - sq);
         c = DataUtil::intFloor(r.z - sq + 0.5) - jd;
         if (c >= 0 && c < n)
-            SZJ::rts[c].Mz = timeStr(r.z - sq);
+            SZJ::rts[c].Mz = DataUtil::jd2hour(r.z - sq);
         c = DataUtil::intFloor(r.j - sq + 0.5) - jd;
         if (c >= 0 && c < n)
-            SZJ::rts[c].Mj = timeStr(r.j - sq);
+            SZJ::rts[c].Mj = DataUtil::jd2hour(r.j - sq);
     }
 }

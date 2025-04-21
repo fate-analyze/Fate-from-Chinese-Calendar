@@ -161,7 +161,7 @@ OB_LUN yueLiCalc(int By, int Bm)
         ob = &lun.day[D - Bd0];
         ob->yxmc = str_yxmc[xn];  //取得月相名称
         ob->yxjd = d;
-        ob->yxsj = timeStr(d);
+        ob->yxsj = DataUtil::jd2hour(d);
     } while (D + 5 < Bd0 + Bdn);
 
     //节气查找
@@ -179,7 +179,7 @@ OB_LUN yueLiCalc(int By, int Bm)
         ob = &lun.day[D - Bd0];
         ob->jqmc = str_jqmc[xn];  //取得节气名称
         ob->jqjd = d;
-        ob->jqsj = timeStr(d);
+        ob->jqsj = DataUtil::jd2hour(d);
     } while (D + 12 < Bd0 + Bdn);
     return lun;
 }
@@ -200,10 +200,10 @@ std::string nianLiSTR(const int y)
         if (s1.length() < 6 || (s1.length() < 9 && (SSQ::leap && i == SSQ::leap)))
             s1 += "月";
         s1 += SSQ::dx[i] > 29 ? "大" : "小";
-        s1 += " " + JD2str(SSQ::HS[i] + J2000).substr(6, 5);
+        s1 += " " + DataUtil::jd2str(SSQ::HS[i] + J2000).substr(6, 5);
 
         double v = OBB::so_accurate2(SSQ::HS[i]);
-        std::string s2 = "(" + JD2str(v + J2000).substr(9, 11) + ")";
+        std::string s2 = "(" + DataUtil::jd2str(v + J2000).substr(9, 11) + ")";
         if (DataUtil::intFloor(v + 0.5) != SSQ::HS[i])
             s2 = "\033[31m" + s2 + "\033[0m";
         // s2+="\n";
@@ -221,10 +221,10 @@ std::string nianLiSTR(const int y)
             if (qi < SSQ::HS[i] || qi >= SSQ::HS[i + 1])
                 continue;
             s1 += "  ";
-            s1 += str_jqmc[(j + 24) % 24] + JD2str(qi + J2000).substr(6, 5);
+            s1 += str_jqmc[(j + 24) % 24] + DataUtil::jd2str(qi + J2000).substr(6, 5);
 
             v = OBB::qi_accurate2(qi);
-            s2 = "(" + JD2str(v + J2000).substr(9, 11) + ")";
+            s2 = "(" + DataUtil::jd2str(v + J2000).substr(9, 11) + ")";
             if (DataUtil::intFloor(v + 0.5) != qi)
                 s2 = "\033[31m" + s2 + "\033[0m";
             //v=(v+0.5+J2000)%1; if(v>0.5) v=1-v; if(v<8/1440) s2 = "<u>"+s2+"</u>"; //对靠近0点的加注
@@ -245,7 +245,7 @@ Bazi jb2Bazi(const Date &date, const double lng)
     jd += pty_zty2(jd2 / 36525) + lng / radd / M_PI / 2;                     // 本地真太阳时(使用低精度算法计算时差)
 
     Bazi ob;
-    ob.bz_zty = timeStr(jd);
+    ob.bz_zty = DataUtil::jd2hour(jd);
     jd += 13.0 / 24;          //转为前一日23点起算(原jd为本日中午12点起算)
     const int D = floor(jd);  //日数与时辰
     const int SC = DataUtil::intFloor((jd - D) * 12);

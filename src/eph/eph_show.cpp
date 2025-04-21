@@ -51,7 +51,7 @@ std::string rysCalc(Date d, bool is_utc, bool nasa_r)
 
         // 显示南北界数据
         RS_PL::nasa_r = nasa_r;  // 视径选择
-        s = s + "\n--------------------------------------\n" + JD2str(jd + J2000) + " TD\n--------------------------------------\n"
+        s = s + "\n--------------------------------------\n" + DataUtil::jd2str(jd + J2000) + " TD\n--------------------------------------\n"
             + "南北界点：经度　　　　纬度\n";
         std::array<std::string, 5> mc = {"食中心点", "本影北界", "本影南界", "半影北界", "半影南界"};
         RS_PL::nbj(jd);
@@ -79,7 +79,7 @@ std::string rysCalc(Date d, bool is_utc, bool nasa_r)
                 continue;
             if (is_utc)
                 jd -= -8 / 24.0 + dt_T(jd), td = " UTC";  // 转为UTC(本地时间)
-            s += mc[i] + ":" + JD2str(jd + J2000) + td + "\n";
+            s += mc[i] + ":" + DataUtil::jd2str(jd + J2000) + td + "\n";
         }
         s += "时长: " + m2fm(RS_PL::dur * 86400, 1, 1) + "\n";
         s += "食分: " + to_str(RS_PL::sf, 5) + "\n";
@@ -110,7 +110,7 @@ std::string rysCalc(Date d, bool is_utc, bool nasa_r)
                 continue;
             if (is_utc)
                 jd -= -8 / 24.0 + dt_T(jd), td = " UTC";  // 转为UTC(本地时间)
-            s = s + mc[i] + ":" + JD2str(jd + J2000) + td + "\n";
+            s = s + mc[i] + ":" + DataUtil::jd2str(jd + J2000) + td + "\n";
         }
         s += "食分:" + to_str(YS_PL::sf, 5) + "\n";
         s += "食分指月面直径被遮比例\n\n";
@@ -142,7 +142,7 @@ std::string rs_search(int Y, int M, int n, bool fs)
             r = {rr.jd, rr.jdSuo, r.ac, rr.lx};
         }
         if (r.lx != "N") {
-            s += JD2str(r.jd + J2000).substr(0, 11);
+            s += DataUtil::jd2str(r.jd + J2000).substr(0, 11);
             s += r.lx;
             k++;
             if (k % 5 == 0)
@@ -171,7 +171,7 @@ std::string rs2_calc(uint8_t fs, double jd0, double step)
         jd += step;
     jd = MS_aLon_t2(DataUtil::intFloor((jd + 8) / 29.5306) * _pi * 2) * 36525.0;  //归朔
     //Cp10_jd.value = Cp10_jd2.value = (jd+J2000),6);    //保存在屏幕上
-    std::cout << JD2str(jd + J2000) << std::endl;  //显示时间串
+    std::cout << DataUtil::jd2str(jd + J2000) << std::endl;  //显示时间串
 
     std::unordered_map<std::string, std::string> lxb = {
         {"T",  "全食"                },
@@ -196,16 +196,16 @@ std::string rs2_calc(uint8_t fs, double jd0, double step)
         } else {
             s = s + "\n" + "\033[1m本次日食概述(力学时)\033[0m\n"
 
-                + "偏食始：" + JD2str(r.gk3[2] + J2000) + " " + rad2str2(r.gk3[0]) + "," + rad2str2(r.gk3[1]) + "\n" + "中心始："
-                + JD2str(r.gk1[2] + J2000) + " " + rad2str2(r.gk1[0]) + "," + rad2str2(r.gk1[1]) + "\n"
-                + (r.gk5[1] != 100 ? "视午食：" + JD2str(r.gk5[2] + J2000) + " " + rad2str2(r.gk5[0]) + "," + rad2str2(r.gk5[1]) + "\n"
+                + "偏食始：" + DataUtil::jd2str(r.gk3[2] + J2000) + " " + rad2str2(r.gk3[0]) + "," + rad2str2(r.gk3[1]) + "\n" + "中心始："
+                + DataUtil::jd2str(r.gk1[2] + J2000) + " " + rad2str2(r.gk1[0]) + "," + rad2str2(r.gk1[1]) + "\n"
+                + (r.gk5[1] != 100 ? "视午食：" + DataUtil::jd2str(r.gk5[2] + J2000) + " " + rad2str2(r.gk5[0]) + "," + rad2str2(r.gk5[1]) + "\n"
                                    : "")
-                + "中心终：" + JD2str(r.gk2[2] + J2000) + " " + rad2str2(r.gk2[0]) + "," + rad2str2(r.gk2[1]) + "\n" + "偏食终："
-                + JD2str(r.gk4[2] + J2000) + " " + rad2str2(r.gk4[0]) + "," + rad2str2(r.gk4[1]) + "\n"
+                + "中心终：" + DataUtil::jd2str(r.gk2[2] + J2000) + " " + rad2str2(r.gk2[0]) + "," + rad2str2(r.gk2[1]) + "\n" + "偏食终："
+                + DataUtil::jd2str(r.gk4[2] + J2000) + " " + rad2str2(r.gk4[0]) + "," + rad2str2(r.gk4[1]) + "\n"
 
                 + "\033[1m中心点特征\033[0m\n" + "影轴地心距 γ = " + to_str(r.D, 4) + "\n"
                 + "中心地标 (经,纬) = " + to_str((r.zxJ * radd), 2) + "," + to_str((r.zxW * radd), 2) + "\n"
-                + "中心时刻 tm = " + JD2str(r.jd + J2000) + "\n" + "太阳方位 (经,纬) = " + to_str((r.Sdp[0] * radd), 0) + ","
+                + "中心时刻 tm = " + DataUtil::jd2str(r.jd + J2000) + "\n" + "太阳方位 (经,纬) = " + to_str((r.Sdp[0] * radd), 0) + ","
                 + to_str((r.Sdp[1] * radd), 0) + "\n" + "日食类型 LX = " + r.lx + " " + lxb[r.lx] + "\n" + "食分=" + to_str(r.sf, 4)
                 + ", 食延=" + m2fm(r.tt * 86400, 0, 2) + ", 食带=" + to_str(r.dw, 0) + "km\n" + "\n";
         }
@@ -222,7 +222,7 @@ std::string rs2_calc(uint8_t fs, double jd0, double step)
             _FEATURE r = RS_GS::feature(jd);
             if (r.lx == "N")
                 continue;
-            s = s + "\033[31;1m" + JD2str(r.jd + J2000)                 //时间
+            s = s + "\033[31;1m" + DataUtil::jd2str(r.jd + J2000)                 //时间
                 + "  \033[33m" + to_str(r.D, 4, 7, true)                //伽马
                 + "  \033[32m" + fill_str(r.lx, 2, " ") + "  \033[35m"  //类型
                 + to_str((r.zxJ * radd), 2, 7) + "," + to_str((r.zxW * radd), 2, 7) + "  \033[34m" + to_str((r.Sdp[0] * radd), 2, 7) + ","
@@ -258,17 +258,17 @@ std::string shengjiang(int y, int m, int d)
     double c = J2000 + 8 / 24.0;
 
     r = SZJ::St(jd - sq / 24.0);
-    s += "太阳升起 " + JD2str(r.s + c) + " 太阳降落 " + JD2str(r.j + c) + "\n";
-    s += "日上中天 " + JD2str(r.z + c) + " 日下中天 " + JD2str(r.x + c) + "\n";
-    s += "民用天亮 " + JD2str(r.c + c) + " 民用天黑 " + JD2str(r.h + c) + "\n";
-    s += "航海天亮 " + JD2str(r.c2 + c) + " 航海天黑 " + JD2str(r.h2 + c) + "\n";
-    s += "天文天亮 " + JD2str(r.c3 + c) + " 天文天黑 " + JD2str(r.h3 + c) + "\n";
-    s += "日照长度  " + timeStr(r.j - r.s - 0.5) + " \n日光长度  " + timeStr(r.h - r.c - 0.5) + "\n";
+    s += "太阳升起 " + DataUtil::jd2str(r.s + c) + " 太阳降落 " + DataUtil::jd2str(r.j + c) + "\n";
+    s += "日上中天 " + DataUtil::jd2str(r.z + c) + " 日下中天 " + DataUtil::jd2str(r.x + c) + "\n";
+    s += "民用天亮 " + DataUtil::jd2str(r.c + c) + " 民用天黑 " + DataUtil::jd2str(r.h + c) + "\n";
+    s += "航海天亮 " + DataUtil::jd2str(r.c2 + c) + " 航海天黑 " + DataUtil::jd2str(r.h2 + c) + "\n";
+    s += "天文天亮 " + DataUtil::jd2str(r.c3 + c) + " 天文天黑 " + DataUtil::jd2str(r.h3 + c) + "\n";
+    s += "日照长度  " + DataUtil::jd2hour(r.j - r.s - 0.5) + " \n日光长度  " + DataUtil::jd2hour(r.h - r.c - 0.5) + "\n";
     if (r.sm.length())
         s += "注：" + r.sm + "\n";
     r = SZJ::Mt(jd - sq / 24.0);
-    s += "月亮升起 " + JD2str(r.s + c) + " 月亮降落 " + JD2str(r.j + c) + "\n";
-    s += "月上中天 " + JD2str(r.z + c) + " 月下中天 " + JD2str(r.x + c) + "\n";
+    s += "月亮升起 " + DataUtil::jd2str(r.s + c) + " 月亮降落 " + DataUtil::jd2str(r.j + c) + "\n";
+    s += "月上中天 " + DataUtil::jd2str(r.z + c) + " 月下中天 " + DataUtil::jd2str(r.x + c) + "\n";
     //	std::cout << s << std::endl;
     return s;
 }
@@ -282,9 +282,9 @@ std::string shengjiang2(int y)
     std::string s = "", s2 = "";
     for (int i = 0; i < 368; i++) {
         double t = sunShengJ(jd + i, L, fa, -1) + J2000 + 8 / 24.0;
-        s2 += "  \033[31m" + JD2str(t).substr(1, 14) + "\033[0m  ";
+        s2 += "  \033[31m" + DataUtil::jd2str(t).substr(1, 14) + "\033[0m  ";
         t = sunShengJ(jd + i, L, fa, 1) + J2000 + 8 / 24.0;
-        s2 += timeStr(t) + "\n";
+        s2 += DataUtil::jd2hour(t) + "\n";
     }
     //std::cout<<;
     return std::to_string(y) + "年太阳年度升降表\n        升        降\n" + s + s2;
@@ -299,7 +299,7 @@ std::string shengjiang3(int y)
     for (int i = 0; i < 368; i++) {
         D = jd + i - 8 / 24.0 - J2000, D += dt_T(D);
         double t = pty_zty(D / 36525.0);
-        s2 += JD2str(jd + i).substr(0, 11) + " \033[31m" + m2fm(t * 86400, 2, 2) + "\033[0m\n";
+        s2 += DataUtil::jd2str(jd + i).substr(0, 11) + " \033[31m" + m2fm(t * 86400, 2, 2) + "\033[0m\n";
     }
 
     return "太阳时差表(所用时间为北京时间每日12点)\n" + s + s2;

@@ -30,7 +30,7 @@ std::string txFormatT(double t)
     //天象时间格式化输出
     double t1 = t * 36525 + J2000;
     double t2 = t1 - dt_T(t1 - J2000) + 8.0 / 24;
-    return JD2str(t1) + " TD " + JD2str(t2).substr(9, 11) + " UT ";
+    return DataUtil::jd2str(t1) + " TD " + DataUtil::jd2str(t2).substr(9, 11) + " UT ";
 }
 
 void tianXiang(int xm, int xm2, Date dat, int n = 10)
@@ -60,7 +60,7 @@ void tianXiang(int xm, int xm2, Date dat, int n = 10)
                 re = moonNode(jd, 1);  //求升
             if (xm == 4)
                 re = moonNode(jd, 0);  //求降
-            s += txFormatT(re[0]) + rad2str(rad2mrad(re[1]), 0) + "\n";
+            s += txFormatT(re[0]) + DataUtil::rad2str(rad2mrad(re[1]), 0) + "\n";
         }
     }
     if (xm == 5 || xm == 6) {
@@ -152,7 +152,7 @@ void pCalc(int xt, Date dat, int n = 10, int dt = 1, bool Cd_ut = 1)
     //求星历
     for (i = 0; i < n; i++, jd += dt) {
         double jd2 = jd + 2451545;
-        s += JD2str(jd2) + "TD, JED = " + to_str(jd2, 7) + " " + "\n";
+        s += DataUtil::jd2str(jd2) + "TD, JED = " + to_str(jd2, 7) + " " + "\n";
         s += xingX(xt, jd, L, fa) + "\n";
     }
     std::cout << s << std::endl;
@@ -173,7 +173,7 @@ void suoCalc(int y, int n = 24, int jiao = 0)
     for (i = 0; i < n; i++) {
         T = MS_aLon_t((n0 + i + jiao / 360.0) * 2 * M_PI);  //精确时间计算,入口参数是当年各朔望黄经
         r = XL1_calc(2, T, -1);                             //计算月亮
-        s2 += JD2str(T * 36525 + J2000 + 8.0 / 24 - dt_T(T * 36525)) + " " + to_str(r, 2) + "千米\n";  //日期转为字串
+        s2 += DataUtil::jd2str(T * 36525 + J2000 + 8.0 / 24 - dt_T(T * 36525)) + " " + to_str(r, 2) + "千米\n";  //日期转为字串
         if (i % 50 == 0)
             s += s2, s2 = "";
     }
@@ -191,7 +191,7 @@ void qiCalc(int y, int n = 24)
 
     for (i = 0; i < n; i++) {
         T = S_aLon_t((y + i * 15 / 360.0 + 1) * 2 * M_PI);                                      //精确节气时间计算
-        s2 += JD2str(T * 36525 + J2000 + 8 / 24.0 - dt_T(T * 36525)) + str_jqmc[(i + 6) % 24];  //日期转为字串
+        s2 += DataUtil::jd2str(T * 36525 + J2000 + 8 / 24.0 - dt_T(T * 36525)) + str_jqmc[(i + 6) % 24];  //日期转为字串
         if (i % 2 == 1)
             s2 += " 视黄经" + std::to_string(i * 15) + "\n";
         else
@@ -215,7 +215,7 @@ void houCalc(int y, int n = 24)
             s2 = s2 + "\n" + str_jqmc[(i / 3 + 6) % 24];
         else
             s2 += " ";
-        s2 += JD2str(T * 36525 + J2000 + 8.0 / 24.0 - dt_T(T * 36525));  //日期转为字串
+        s2 += DataUtil::jd2str(T * 36525 + J2000 + 8.0 / 24.0 - dt_T(T * 36525));  //日期转为字串
         if (i % 50 == 0)
             s += s2, s2 = "";
     }
@@ -387,7 +387,7 @@ int main()
     init_ob();
 
     OB_LUN lun = yueLiCalc(dat.year_, dat.month_);
-    std::cout << DD2str(get_time()) << std::endl;
+    std::cout << DataUtil::date2str(get_time()) << std::endl;
     std::cout << lun.nianHao_ << std::endl;  //年号
 
     initmap(lun);

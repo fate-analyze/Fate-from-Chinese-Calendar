@@ -19,71 +19,6 @@ void string_replace(std::string &strBig, const std::string &strsrc, const std::s
     }
 }
 
-//提取jd中的时间(去除日期)
-std::string timeStr(double jd)
-{
-    jd += 0.5;
-    jd = (jd - DataUtil::intFloor(jd));
-    int s = DataUtil::intFloor(jd * 86400 + 0.5);
-    int h = DataUtil::intFloor(s / 3600.0);
-    s -= h * 3600;
-    int m = DataUtil::intFloor(s / 60.0);
-    s -= m * 60;
-    std::string H = "0" + std::to_string(h);
-    std::string M = "0" + std::to_string(m);
-    std::string S = "0" + std::to_string(s);
-    return H.substr(H.length() - 2, 2) + ":" + M.substr(M.length() - 2, 2) + ":" + S.substr(S.length() - 2, 2);
-}
-
-//===============角度格式化==================
-std::string rad2strE(double d, bool flag, int ext)
-{
-    //将弧度转为字串,ext为小数保留位数
-    //flag=0输出格式示例: -23°59" 48.23"
-    //flag=1输出格式示例:  18h 29m 44.52s
-    std::string s = " ", w1 = "°", w2 = "\'", w3 = "\"";
-    if (d < 0)
-        d = -d, s = "-";
-    if (flag) {
-        d *= 12 / M_PI;
-        w1 = "h", w2 = "m", w3 = "s";
-    } else
-        d *= 180 / M_PI;
-    int a = floor(d);
-    d = (d - a) * 60;
-    int b = floor(d);
-    d = (d - b) * 60;
-    int c = floor(d);
-
-    double Q = pow(10, ext);
-
-    d = floor((d - c) * Q + 0.5);
-    if (d >= Q)
-        d -= Q, c++;
-    if (c >= 60)
-        c -= 60, b++;
-    if (b >= 60)
-        b -= 60, a++;
-
-    std::string A, B, C, D;
-    A = "   " + std::to_string(a);
-    B = "0" + std::to_string(b);
-    C = "0" + std::to_string(c);
-    D = "00000" + std::to_string((int)d);
-    s += A.substr(A.length() - 3, 3) + w1;
-    s += B.substr(B.length() - 2, 2) + w2;
-    s += C.substr(C.length() - 2, 2);
-    if (ext)
-        s += "." + D.substr(D.length() - ext, ext) + w3;
-    return s;
-}
-
-//将弧度转为字串,保留2位
-std::string rad2str(double d, bool tim)
-{
-    return rad2strE(d, tim, 2);
-}
-
 //将弧度转为字串,精确到分
 std::string rad2str2(double d)
 {
@@ -118,38 +53,6 @@ std::string m2fm(double v, int fx, int fs)
         return gn + std::to_string(f) + "m" + to_str(m, fx) + "s";
     else
         return "error";
-}
-
-// 日期对象转为字符串
-std::string DD2str(Date r)
-{
-    std::string Y = "     " + std::to_string(r.year_), M = "0" + std::to_string(r.month_), D = "0" + std::to_string(r.day_);
-
-    int h = r.hour_, m = r.min_, s = DataUtil::intFloor(r.sec_ + .5);
-    if (s >= 60)
-        s -= 60, m++;
-    if (m >= 60)
-        m -= 60, h++;
-
-    std::string _h, _m, _s;
-    _h = "0" + std::to_string(h);
-    _m = "0" + std::to_string(m);
-    _s = "0" + std::to_string(s);
-    Y = Y.substr(Y.length() - 5, 5);
-    M = M.substr(M.length() - 2, 2);
-    D = D.substr(D.length() - 2, 2);
-    _h = _h.substr(_h.length() - 2, 2);
-    _m = _m.substr(_m.length() - 2, 2);
-    _s = _s.substr(_s.length() - 2, 2);
-
-    return Y + "-" + M + "-" + D + " " + _h + ":" + _m + ":" + _s;
-}
-
-// JD转为字符串
-std::string JD2str(double jd)
-{
-    auto r = jd2Date(jd);
-    return DD2str(r);
 }
 
 std::string fill_str(std::string s, int n, const std::string &c)

@@ -3,6 +3,7 @@
 #include "eph0.h"
 #include "mylib/math_patch.h"
 #include "mylib/tool.h"
+#include "util/DataUtil.h"
 
 using namespace sxwnl;
 
@@ -404,7 +405,7 @@ std::string RS_GS::jieX3(double jd)
         _RSM B = rSM(M[2]);                 //本半影等`
         double r = B.r1;                    //半影半径
         const auto I = bse(t);              //贝塞尔坐标参数
-        s2 = JD2str(t + J2000) + " ", k = 0;
+        s2 = DataUtil::jd2str(t + J2000) + " ", k = 0;
         //南北界
         auto p = nanbei(M, vx, vy, +1, r, I);
         if (p[1] != 100)
