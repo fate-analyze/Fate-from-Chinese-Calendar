@@ -80,7 +80,7 @@ void tianXiang(int xm, int xm2, Date dat, int n = 10)
                 re = daJu(1, jd, 1);  //求水星东大距
             if (xm == 8)
                 re = daJu(1, jd, 0);  //求水星东西距
-            s += txFormatT(re[0]) + to_str((re[1] / M_PI * 180), 5) + "度\n";
+            s += txFormatT(re[0]) + to_str((re[1] / std::numbers::pi * 180), 5) + "度\n";
         }
     }
     if (xm == 9 || xm == 10) {
@@ -90,7 +90,7 @@ void tianXiang(int xm, int xm2, Date dat, int n = 10)
                 re = daJu(2, jd, 1);  //求金星东大距
             if (xm == 10)
                 re = daJu(2, jd, 0);  //求金星东西距
-            s += txFormatT(re[0]) + to_str((re[1] / M_PI * 180), 5) + "度\n";
+            s += txFormatT(re[0]) + to_str((re[1] / std::numbers::pi * 180), 5) + "度\n";
         }
     }
     if (xm == 11) {
@@ -99,7 +99,7 @@ void tianXiang(int xm, int xm2, Date dat, int n = 10)
         s += "合月时间(TD UT) 星月赤纬差(小于1度可能月掩星,由视差决定)\n";
         for (i = 0; i < n; i++, jd = re2[0] + 28.0 / 36525.0) {
             re2 = xingHY(xm2, jd);
-            s += txFormatT(re2[0]) + to_str((-re2[1] / M_PI * 180), 5) + "度\n";
+            s += txFormatT(re2[0]) + to_str((-re2[1] / std::numbers::pi * 180), 5) + "度\n";
         }
     }
     if (xm == 12 || xm == 13) {
@@ -113,7 +113,7 @@ void tianXiang(int xm, int xm2, Date dat, int n = 10)
                 re = xingHR(xm2, jd, 0);
             if (xm == 13)
                 re = xingHR(xm2, jd, 1);
-            s += txFormatT(re[0]) + to_str((-re[1] / M_PI * 180), 5) + "度\n";
+            s += txFormatT(re[0]) + to_str((-re[1] / std::numbers::pi * 180), 5) + "度\n";
         }
     }
 
@@ -141,8 +141,8 @@ void pCalc(int xt, Date dat, int n = 10, int dt = 1, bool Cd_ut = 1)
     double jd = date2Jd({dat.year_, dat.month_, dat.day_, dat.hour_, dat.min_, dat.sec_}) - J2000;  //取屏幕时间
     if (Cd_ut)
         jd += -8.0 / 24 + dt_T(jd);  //转为力学时
-    double L = jw.J / 180 * M_PI;    //地标
-    double fa = jw.W / 180 * M_PI;
+    double L = jw.J / 180 * std::numbers::pi;    //地标
+    double fa = jw.W / 180 * std::numbers::pi;
     if (n > 1000) {
         std::cout << "个数太多了" << std::endl;
         return;
@@ -171,7 +171,7 @@ void suoCalc(int y, int n = 24, int jiao = 0)
     std::string s = "月-日黄经差" + std::to_string(jiao) + "\n", s2 = "";
     int n0 = DataUtil::intFloor(y * (365.2422 / 29.53058886));  //截止当年首经历朔望的个数
     for (i = 0; i < n; i++) {
-        T = MS_aLon_t((n0 + i + jiao / 360.0) * 2 * M_PI);  //精确时间计算,入口参数是当年各朔望黄经
+        T = MS_aLon_t((n0 + i + jiao / 360.0) * 2 * std::numbers::pi);  //精确时间计算,入口参数是当年各朔望黄经
         r = XL1_calc(2, T, -1);                             //计算月亮
         s2 += DataUtil::jd2str(T * 36525 + J2000 + 8.0 / 24 - dt_T(T * 36525)) + " " + to_str(r, 2) + "千米\n";  //日期转为字串
         if (i % 50 == 0)
@@ -190,7 +190,7 @@ void qiCalc(int y, int n = 24)
     std::string s = "", s2 = "";
 
     for (i = 0; i < n; i++) {
-        T = S_aLon_t((y + i * 15 / 360.0 + 1) * 2 * M_PI);                                      //精确节气时间计算
+        T = S_aLon_t((y + i * 15 / 360.0 + 1) * 2 * std::numbers::pi);                                      //精确节气时间计算
         s2 += DataUtil::jd2str(T * 36525 + J2000 + 8 / 24.0 - dt_T(T * 36525)) + str_jqmc[(i + 6) % 24];  //日期转为字串
         if (i % 2 == 1)
             s2 += " 视黄经" + std::to_string(i * 15) + "\n";
@@ -210,7 +210,7 @@ void houCalc(int y, int n = 24)
     double T;
     std::string s = "初候　　　　　　　　　　　　二候　　　　　　　　　三候", s2 = "";
     for (i = 0; i < n * 3; i++) {
-        T = S_aLon_t((y + i * 5 / 360.0 + 1) * 2 * M_PI);  //精确节气时间计算
+        T = S_aLon_t((y + i * 5 / 360.0 + 1) * 2 * std::numbers::pi);  //精确节气时间计算
         if (i % 3 == 0)
             s2 = s2 + "\n" + str_jqmc[(i / 3 + 6) % 24];
         else
@@ -229,7 +229,7 @@ void dingQi_cmp(int y = 2000, int N = 10)
     int i;
     double W, T, maxT = 0;
     for (i = 0; i < N; i++) {
-        W = (y + i / 24) * 2 * M_PI;
+        W = (y + i / 24) * 2 * std::numbers::pi;
         T = S_aLon_t2(W) - S_aLon_t(W);  //节气粗算与精算的差异
         T = DataUtil::intFloor(abs(T * 36525 * 86400));
         if (T > maxT)
@@ -247,7 +247,7 @@ void dingSuo_cmp(int y = 2000, int N = 10)
     double T, maxT = 0, W;
     int n = DataUtil::intFloor(y * (365.2422 / 29.53058886));  //截止当年首经历朔望的个数
     for (i = 0; i < N; i++) {
-        W = (n + i / 24.0) * 2 * M_PI;
+        W = (n + i / 24.0) * 2 * std::numbers::pi;
         T = MS_aLon_t2(W) - MS_aLon_t(W);  //合塑粗算与精算的差异
         T = DataUtil::intFloor(abs(T * 36525 * 86400));
         if (T > maxT)

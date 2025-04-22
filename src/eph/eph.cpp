@@ -263,9 +263,9 @@ std::string xingX(int xt, double jd, double L, double fa)
     z = parallax(z, sj, fa, 0);            //视差修正
     s += "站赤经 " + DataUtil::rad2str(z[0], true) + " 站赤纬 " + DataUtil::rad2str(z[1], false) + " 视距离 " + to_str(rc, rfn) + "\n";
 
-    z[0] += M_PI / 2 - gst - L;     //修正了视差的赤道坐标
-    z = llrConv(z, M_PI / 2 - fa);  //转到时角坐标转到地平坐标
-    z[0] = rad2mrad(M_PI / 2 - z[0]);
+    z[0] += std::numbers::pi / 2 - gst - L;     //修正了视差的赤道坐标
+    z = llrConv(z, std::numbers::pi / 2 - fa);  //转到时角坐标转到地平坐标
+    z[0] = rad2mrad(std::numbers::pi / 2 - z[0]);
 
     if (z[1] > 0)
         z[1] += MQC(z[1]);  //大气折射修正

@@ -1,7 +1,6 @@
 #include "eph_szj.h"
 #include <array>
 #include "eph0.h"
-#include "mylib/math_patch.h"
 #include "mylib/tool.h"
 #include "util/DataUtil.h"
 
@@ -27,7 +26,7 @@ double SZJ::getH(double h, double w)
 {  //h地平纬度,w赤纬,返回时角
     double c = (sin(h) - sin(SZJ::fa) * sin(w)) / cos(SZJ::fa) / cos(w);
     if (fabs(c) > 1)
-        return M_PI;
+        return std::numbers::pi;
     return acos(c);
 };
 
@@ -54,7 +53,7 @@ SJ SZJ::Mt(double jd)
     r.s += (-r.H0 - r.H) / sv;
     r.j += (r.H0 - r.H) / sv;
     r.z += (0 - r.H) / sv;
-    r.x += (M_PI - r.H) / sv;
+    r.x += (std::numbers::pi - r.H) / sv;
     SZJ::Mcoord(r.s, 1, r);
     r.s += rad2rrad(-r.H0 - r.H) / sv;
     SZJ::Mcoord(r.j, 1, r);
@@ -62,13 +61,13 @@ SJ SZJ::Mt(double jd)
     SZJ::Mcoord(r.z, 0, r);
     r.z += rad2rrad(0 - r.H) / sv;
     SZJ::Mcoord(r.x, 0, r);
-    r.x += rad2rrad(M_PI - r.H) / sv;
+    r.x += rad2rrad(std::numbers::pi - r.H) / sv;
     return r;
 }
 
 void SZJ::Scoord(double jd, int xm, SJ &r)
 {  //章动同时影响恒星时和天体坐标,所以不计算章动。返回时角及赤经纬
-    std::array<double, 3> z = {E_Lon((jd + SZJ::dt) / 36525, 5) + M_PI - 20.5 / rad, 0, 1};  //太阳坐标(修正了光行差)
+    std::array<double, 3> z = {E_Lon((jd + SZJ::dt) / 36525, 5) + std::numbers::pi - 20.5 / rad, 0, 1};  //太阳坐标(修正了光行差)
     z = llrConv(z, SZJ::E);                                                                  //转为赤道坐标
     r.H = rad2rrad(pGST(jd, SZJ::dt) + SZJ::L - z[0]);                                       //得到此刻天体时角
 
@@ -104,45 +103,45 @@ SJ SZJ::St(double jd)
     r.h3 += (r.H4 - r.H) / sv;   //天文昏
 
     r.z += (0 - r.H) / sv;     //中天
-    r.x += (M_PI - r.H) / sv;  //下中天
+    r.x += (std::numbers::pi - r.H) / sv;  //下中天
     SZJ::Scoord(r.s, 1, r);
     r.s += rad2rrad(-r.H1 - r.H) / sv;
-    if (r.H1 == M_PI)
+    if (r.H1 == std::numbers::pi)
         r.sm += "无升起.";
     SZJ::Scoord(r.j, 1, r);
     r.j += rad2rrad(+r.H1 - r.H) / sv;
-    if (r.H1 == M_PI)
+    if (r.H1 == std::numbers::pi)
         r.sm += "无降落.";
 
     SZJ::Scoord(r.c, 2, r);
     r.c += rad2rrad(-r.H2 - r.H) / sv;
-    if (r.H2 == M_PI)
+    if (r.H2 == std::numbers::pi)
         r.sm += "无民用晨.";
     SZJ::Scoord(r.h, 2, r);
     r.h += rad2rrad(+r.H2 - r.H) / sv;
-    if (r.H2 == M_PI)
+    if (r.H2 == std::numbers::pi)
         r.sm += "无民用昏.";
     SZJ::Scoord(r.c2, 3, r);
     r.c2 += rad2rrad(-r.H3 - r.H) / sv;
-    if (r.H3 == M_PI)
+    if (r.H3 == std::numbers::pi)
         r.sm += "无航海晨.";
     SZJ::Scoord(r.h2, 3, r);
     r.h2 += rad2rrad(+r.H3 - r.H) / sv;
-    if (r.H3 == M_PI)
+    if (r.H3 == std::numbers::pi)
         r.sm += "无航海昏.";
     SZJ::Scoord(r.c3, 4, r);
     r.c3 += rad2rrad(-r.H4 - r.H) / sv;
-    if (r.H4 == M_PI)
+    if (r.H4 == std::numbers::pi)
         r.sm += "无天文晨.";
     SZJ::Scoord(r.h3, 4, r);
     r.h3 += rad2rrad(+r.H4 - r.H) / sv;
-    if (r.H4 == M_PI)
+    if (r.H4 == std::numbers::pi)
         r.sm += "无天文昏.";
 
     SZJ::Scoord(r.z, 0, r);
     r.z += (0 - r.H) / sv;
     SZJ::Scoord(r.x, 0, r);
-    r.x += rad2rrad(M_PI - r.H) / sv;
+    r.x += rad2rrad(std::numbers::pi - r.H) / sv;
     return r;
 }
 

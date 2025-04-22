@@ -51,8 +51,8 @@ std::string rysCalc(Date d, bool is_utc, bool nasa_r)
 
         // 显示南北界数据
         RS_PL::nasa_r = nasa_r;  // 视径选择
-        s = s + "\n--------------------------------------\n" + DataUtil::jd2str(jd + J2000) + " TD\n--------------------------------------\n"
-            + "南北界点：经度　　　　纬度\n";
+        s = s + "\n--------------------------------------\n" + DataUtil::jd2str(jd + J2000)
+            + " TD\n--------------------------------------\n" + "南北界点：经度　　　　纬度\n";
         std::array<std::string, 5> mc = {"食中心点", "本影北界", "本影南界", "半影北界", "半影南界"};
         RS_PL::nbj(jd);
         for (i = 0; i < 5; i++) {
@@ -198,8 +198,9 @@ std::string rs2_calc(uint8_t fs, double jd0, double step)
 
                 + "偏食始：" + DataUtil::jd2str(r.gk3[2] + J2000) + " " + rad2str2(r.gk3[0]) + "," + rad2str2(r.gk3[1]) + "\n" + "中心始："
                 + DataUtil::jd2str(r.gk1[2] + J2000) + " " + rad2str2(r.gk1[0]) + "," + rad2str2(r.gk1[1]) + "\n"
-                + (r.gk5[1] != 100 ? "视午食：" + DataUtil::jd2str(r.gk5[2] + J2000) + " " + rad2str2(r.gk5[0]) + "," + rad2str2(r.gk5[1]) + "\n"
-                                   : "")
+                + (r.gk5[1] != 100
+                       ? "视午食：" + DataUtil::jd2str(r.gk5[2] + J2000) + " " + rad2str2(r.gk5[0]) + "," + rad2str2(r.gk5[1]) + "\n"
+                       : "")
                 + "中心终：" + DataUtil::jd2str(r.gk2[2] + J2000) + " " + rad2str2(r.gk2[0]) + "," + rad2str2(r.gk2[1]) + "\n" + "偏食终："
                 + DataUtil::jd2str(r.gk4[2] + J2000) + " " + rad2str2(r.gk4[0]) + "," + rad2str2(r.gk4[1]) + "\n"
 
@@ -222,7 +223,7 @@ std::string rs2_calc(uint8_t fs, double jd0, double step)
             _FEATURE r = RS_GS::feature(jd);
             if (r.lx == "N")
                 continue;
-            s = s + "\033[31;1m" + DataUtil::jd2str(r.jd + J2000)                 //时间
+            s = s + "\033[31;1m" + DataUtil::jd2str(r.jd + J2000)       //时间
                 + "  \033[33m" + to_str(r.D, 4, 7, true)                //伽马
                 + "  \033[32m" + fill_str(r.lx, 2, " ") + "  \033[35m"  //类型
                 + to_str((r.zxJ * radd), 2, 7) + "," + to_str((r.zxW * radd), 2, 7) + "  \033[34m" + to_str((r.Sdp[0] * radd), 2, 7) + ","

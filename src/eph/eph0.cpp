@@ -1,7 +1,6 @@
 #include "eph0.h"
 #include <cstring>
 #include "eph_data.h"
-#include "mylib/math_patch.h"
 #include "util/DataUtil.h"
 
 namespace sxwnl {

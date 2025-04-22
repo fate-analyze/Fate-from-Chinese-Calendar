@@ -1,7 +1,6 @@
 #include "lunar_ob.h"
 #include "bazi.h"
 #include "eph/eph0.h"
-#include "mylib/math_patch.h"
 #include "util/DataUtil.h"
 
 using namespace sxwnl;
@@ -350,7 +349,7 @@ double OBB::so_accurate(double W)
 double OBB::qi_accurate2(double jd)
 {
     //精气
-    double d = M_PI / 12;
+    double d = std::numbers::pi / 12;
     double w = floor((jd + 293) / 365.2422 * 24) * d;
     double a = qi_accurate(w);
     if (a - jd > 5) {
@@ -366,5 +365,5 @@ double OBB::qi_accurate2(double jd)
 double OBB::so_accurate2(double jd)
 {
     //精朔
-    return so_accurate(floor((jd + 8) / 29.5306) * M_PI * 2);
+    return so_accurate(floor((jd + 8) / 29.5306) * std::numbers::pi * 2);
 }

@@ -3,7 +3,6 @@
 #include <string>
 #include "eph/eph0.h"
 #include "lunar_ob.h"
-#include "mylib/math_patch.h"
 #include "mylib/tool.h"
 #include "util/DataUtil.h"
 
@@ -230,10 +229,10 @@ int SSQ::calc(double jd, int qs)
         // (这一部分调用了qi_high和so_high,所以需星历表支持)
 
         if (qs == 1)
-            return floor(qi_high(floor((jd + pc - 2451259) / 365.2422 * 24) * M_PI / 12)
+            return floor(qi_high(floor((jd + pc - 2451259) / 365.2422 * 24) * std::numbers::pi / 12)
                          + 0.5);  // 2451259是1999.3.21,太阳视黄经为0,春分.定气计算
         else
-            return floor(so_high(floor((jd + pc - 2451551) / 29.5306) * M_PI * 2) + 0.5);  // 2451551是2000.1.7的那个朔日,黄经差为0.定朔计算
+            return floor(so_high(floor((jd + pc - 2451551) / 29.5306) * std::numbers::pi * 2) + 0.5);  // 2451551是2000.1.7的那个朔日,黄经差为0.定朔计算
     }
 
     if (jd >= f1 && jd < f2) {
@@ -255,11 +254,11 @@ int SSQ::calc(double jd, int qs)
         char n;
         // 定气或定朔
         if (qs) {
-            D = floor(qi_low(floor((jd + pc - 2451259) / 365.2422 * 24) * M_PI / 12)
+            D = floor(qi_low(floor((jd + pc - 2451259) / 365.2422 * 24) * std::numbers::pi / 12)
                       + 0.5);                                           // 2451259是1999.3.21,太阳视黄经为0,春分.定气计算
             n = str_qs[DataUtil::intFloor((jd - f2) / 365.2422 * 24)];  // 找定气修正值
         } else {
-            D = floor(so_low(floor((jd + pc - 2451551) / 29.5306) * M_PI * 2) + 0.5);  // 2451551是2000.1.7的那个朔日,黄经差为0.定朔计算
+            D = floor(so_low(floor((jd + pc - 2451551) / 29.5306) * std::numbers::pi * 2) + 0.5);  // 2451551是2000.1.7的那个朔日,黄经差为0.定朔计算
             n = str_qs[DataUtil::intFloor((jd - f2) / 29.5306)];                       // 找定朔修正值
         }
         if (n == '1')

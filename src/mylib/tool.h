@@ -1,12 +1,9 @@
 #ifndef TOOL_H
 #define TOOL_H
 
-#include <cstdlib>
 #include <string>
-#include "mylib/math_patch.h"
-#include "TimeGeo.h"
 
-#define A2R(x) ((x) / 180 * M_PI)
+#define A2R(x) ((x) / 180 * std::numbers::pi)
 
 namespace sxwnl {
 

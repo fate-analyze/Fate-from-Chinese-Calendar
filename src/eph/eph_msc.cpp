@@ -2,7 +2,6 @@
 #include <sstream>
 #include "eph.h"
 #include "eph0.h"
-#include "mylib/math_patch.h"
 #include "mylib/mystl/my_string.h"
 #include "mylib/tool.h"
 #include "util/DataUtil.h"

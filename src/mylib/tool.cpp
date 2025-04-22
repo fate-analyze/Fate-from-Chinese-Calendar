@@ -1,7 +1,6 @@
 #include "tool.h"
 #include <cstdlib>
 #include <string>
-#include "math_patch.h"
 #include "mylib/mystl/my_string.h"
 #include "util/DataUtil.h"
 
@@ -26,7 +25,7 @@ std::string rad2str2(double d)
     std::string s = "+", w1 = "°", w2 = "\'", w3 = "\"";
     if (d < 0)
         d = -d, s = "-";
-    d *= 180 / M_PI;
+    d *= 180 / std::numbers::pi;
     int a = floor(d);
     int b = floor((d - a) * 60 + 0.5);
     if (b >= 60)

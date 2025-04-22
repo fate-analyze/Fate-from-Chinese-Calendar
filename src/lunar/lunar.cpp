@@ -3,7 +3,6 @@
 #include "bazi.h"
 #include "eph/eph0.h"
 #include "lunar_ssq.h"
-#include "mylib/math_patch.h"
 #include "mylib/tool.h"
 #include "util/DataUtil.h"
 
@@ -148,7 +147,7 @@ OB_LUN yueLiCalc(int By, int Bm)
     double d, jd2 = Bd0 + dt_T(Bd0) - 8 / 24.0;
     //月相查找
     double w = MS_aLon(jd2 / 36525, 10, 3);
-    w = DataUtil::intFloor((w - 0.78) / M_PI * 2) * M_PI / 2;
+    w = DataUtil::intFloor((w - 0.78) / std::numbers::pi * 2) * std::numbers::pi / 2;
     do {
         d = OBB::so_accurate(w);
         D = DataUtil::intFloor(d + 0.5);
@@ -242,7 +241,7 @@ Bazi jb2Bazi(const Date &date, const double lng)
     const double jd2 = jd + dt_T(jd);                                        // 力学时
     const double w = S_aLon(jd2 / 36525.0, -1);                              // 此刻太阳视黄经
     const int k = DataUtil::intFloor((w / pi2 * 360 + 45 + 15 * 360) / 30);  // 1984年立春起算的节气数(不含中气)
-    jd += pty_zty2(jd2 / 36525) + lng / radd / M_PI / 2;                     // 本地真太阳时(使用低精度算法计算时差)
+    jd += pty_zty2(jd2 / 36525) + lng / radd / std::numbers::pi / 2;                     // 本地真太阳时(使用低精度算法计算时差)
 
     Bazi ob;
     ob.bz_zty = DataUtil::jd2hour(jd);

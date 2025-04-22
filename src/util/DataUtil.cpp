@@ -36,7 +36,7 @@ std::string DataUtil::rad2str(double radian, bool flag, int precision)
     radian = std::abs(radian);
 
     // 单位转换
-    double converted = flag ? (radian * 12 / std::numbers::pi_v<double>) : (radian * 180.0 / std::numbers::pi_v<double>);
+    double converted = flag ? (radian * 12 / std::numbers::pi) : (radian * 180.0 / std::numbers::pi);
 
     // 分解各个分量
     int a = std::floor(converted);

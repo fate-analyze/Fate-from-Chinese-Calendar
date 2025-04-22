@@ -1,6 +1,7 @@
 #include "eph_yspl.h"
+#include <cmath>
 #include "eph0.h"
-#include "mylib/math_patch.h"
+#include "util/DataUtil.h"
 
 using namespace sxwnl;
 
@@ -49,7 +50,7 @@ void YS_PL::lecMax(double jd)
     YS_PL::sf = 0;
     YS_PL::LX = "";
 
-    jd = MS_aLon_t2(floor((jd - 4) / 29.5306) * _pi * 2 + _pi) * 36525;  //低精度的朔(误差10分钟),与食甚相差10分钟左右
+    jd = MS_aLon_t2(std::floor((jd - 4) / 29.5306) * _pi * 2 + _pi) * 36525;  //低精度的朔(误差10分钟),与食甚相差10分钟左右
 
     RE0 g = {}, G = {};
 
