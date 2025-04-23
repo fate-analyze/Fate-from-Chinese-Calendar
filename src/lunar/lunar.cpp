@@ -1,6 +1,6 @@
 #include "lunar.h"
 #include <cstring>
-#include "bazi.h"
+#include "Bazi.h"
 #include "eph/eph0.h"
 #include "lunar_ssq.h"
 #include "mylib/tool.h"

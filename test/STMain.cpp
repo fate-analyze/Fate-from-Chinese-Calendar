@@ -9,7 +9,7 @@ API测试
 #include <iostream>
 #include <string>
 #include <unordered_map>
-#include "bazi.h"
+#include "Bazi.h"
 #include "eph/eph.h"
 #include "eph/eph0.h"
 #include "eph/eph_show.h"

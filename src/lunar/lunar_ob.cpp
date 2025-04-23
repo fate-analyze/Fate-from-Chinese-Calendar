@@ -1,5 +1,5 @@
 #include "lunar_ob.h"
-#include "bazi.h"
+#include "Bazi.h"
 #include "eph/eph0.h"
 #include "util/DataUtil.h"
 

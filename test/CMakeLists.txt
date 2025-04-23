@@ -1,6 +1,5 @@
 enable_testing()
-set(GTEST_LIBRARY /usr/local/lib/gtest)
-set(GTEST_INCLUDE_DIRS /usr/local/include/gtest)
+find_package(GTest REQUIRED)
 
 add_executable(${PROJECT_NAME}_ut
     UTMain.cpp
@@ -14,8 +13,8 @@ target_include_directories(${PROJECT_NAME}_ut PRIVATE
 )
 target_link_libraries(${PROJECT_NAME}_ut PRIVATE
     ${PROJECT_NAME}_src
-    gtest
-    gtest_main
+    GTest::GTest
+    GTest::Main
     pthread
 )
 
