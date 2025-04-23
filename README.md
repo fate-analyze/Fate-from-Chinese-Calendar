@@ -1,41 +1,22 @@
-# Sxwnl-cpp  
 寿星天文历(万年历)c++版  
-Sxwnl for cpp version
-# Build
-## 1.Use cmake  
-```bash
-# build or update bin
-./autobuild.sh
 
-# clean obj files and build
-./rebuild.sh
+# Improvement
+1. 溯源并修正部分算法，添加对应的文档
+2. 精简，并规范原始仓库中的cpp代码
+3. 引入测试用例
 
-```
-## 2.Use make  
-```bash
-# clean obj files
-make clean
-# for windows
-make cleanw
 
-### Build test0
-make test0
-### Build test1
-make test1
-### build all
-make
+# Plan
+以下是项目将要达成的目标，按先后顺序排列
+- [x] 替换为cmake工程
+- [ ] 完成代码的规范化，溯源算法，同步添加测试用例
+  - [x] 儒略日相关
+  - [ ] 月相相关
+  - [ ] 八字相关
+  - [ ] 将自定义的工具函数替换为STL版本
+- [ ] 发布为python库
 
-```
-
-# Run test  
-```bash
-# cmake build
-./build/test0
-./build/test1
-# make build
-./test0
-./test1
-```
-
-# Bugs
-TODO
+# Future
+这部分暂时还没相好，但确实是有东西可作的，比如：
+1. 同步完成对中华自古以来天文历法的溯源。这部分应该会单独开一个仓来作整理
+2. 丰富八字的部分，完成天文、地理与八字相关性的学习。不过，这部分大概不会在这个仓库中了
