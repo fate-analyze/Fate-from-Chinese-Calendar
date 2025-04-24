@@ -140,7 +140,7 @@ double shiChaJ(double gst, double L, double fa, double J, double W)
 double hcjj(double t)
 {  //返回P03黄赤交角,t是世纪数
     double t2 = t * t, t3 = t2 * t, t4 = t3 * t, t5 = t4 * t;
-    return (84381.4060 - 46.836769 * t - 0.0001831 * t2 + 0.00200340 * t3 - 5.76e-7 * t4 - 4.34e-8 * t5) / rad;
+    return (84381.4060 - 46.836769 * t - 0.0001831 * t2 + 0.00200340 * t3 - 5.76e-7 * t4 - 4.34e-8 * t5) / cs_rad;
 }
 
 double dt_ext(double y, double jsd)
@@ -211,7 +211,7 @@ double prece(double t, const char *ss, const char *mx)
 
     for (int i = 0; i < n; i++, tn *= t)
         c += p[sc * n + i] * tn;
-    return c / rad;
+    return c / cs_rad;
 }
 
 //==========================岁差旋转==========================
@@ -307,7 +307,7 @@ std::array<double, 2> nutation2(double t)
         dL += (B[i + 3] + a) * sin(c);
         dE += B[i + 4] * cos(c);
     }
-    std::array<double, 2> nu = {dL / 100 / rad, dE / 100 / rad};
+    std::array<double, 2> nu = {dL / 100 / cs_rad, dE / 100 / cs_rad};
     return nu;  //黄经章动,交角章动
 }
 
@@ -322,9 +322,9 @@ std::array<double, 2> nutation(double t, int zq)
     double D = 1072260.70369 + 1602961601.2090 * t - 6.3706 * t2 + 0.006593 * t3 - 0.00003169 * t4;
     double Om = 450160.398036 - 6962890.5431 * t + 7.4722 * t2 + 0.007702 * t3 - 0.00005939 * t4;
     for (int i = 0; i < 77 * 11; i += 11) {  //周期项取和计算
-        double c = (nuTab[i] * l + nuTab[i + 1] * l1 + nuTab[i + 2] * F + nuTab[i + 3] * D + nuTab[i + 4] * Om) / rad;
+        double c = (nuTab[i] * l + nuTab[i + 1] * l1 + nuTab[i + 2] * F + nuTab[i + 3] * D + nuTab[i + 4] * Om) / cs_rad;
         if (zq) {  //只算周期大于zq天的项
-            double q = 36526 * 2 * _pi * rad
+            double q = 36526 * 2 * _pi * cs_rad
                        / (1717915923.2178 * nuTab[i] + 129596581.0481 * nuTab[i + 1] + 1739527262.8478 * nuTab[i + 2]
                           + 1602961601.2090 * nuTab[i + 3] + 6962890.5431 * nuTab[i + 4]);
             if (q < zq)
@@ -333,8 +333,8 @@ std::array<double, 2> nutation(double t, int zq)
         nutation[0] += (nuTab[i + 5] + nuTab[i + 6] * t) * sin(c) + nuTab[i + 7] * cos(c);
         nutation[1] += (nuTab[i + 8] + nuTab[i + 9] * t) * cos(c) + nuTab[i + 10] * sin(c);
     }
-    nutation[0] /= 10000000 * rad;
-    nutation[1] /= 10000000 * rad;
+    nutation[0] /= 10000000 * cs_rad;
+    nutation[1] /= 10000000 * cs_rad;
     return nutation;  //返回IAU2000B章动值, dL是黄经章动,dE是交角章动
 }
 
@@ -348,7 +348,7 @@ double nutationLon2(double t)
             a = 0;
         dL += (B[i + 3] + a) * sin(B[i] + B[i + 1] * t + B[i + 2] * t2);
     }
-    return dL / 100 / rad;
+    return dL / 100 / cs_rad;
 }
 
 /*******************计算行星位置********************/
@@ -381,19 +381,19 @@ double XL0_calc(int xt, int zn, double t, int n)
     if (xt == 0) {                       //地球
         double t2 = t * t, t3 = t2 * t;  //千年数的各次方
         if (zn == 0)
-            v += (-0.0728 - 2.7702 * t - 1.1019 * t2 - 0.0996 * t3) / rad;
+            v += (-0.0728 - 2.7702 * t - 1.1019 * t2 - 0.0996 * t3) / cs_rad;
         if (zn == 1)
-            v += (+0.0000 + 0.0004 * t + 0.0004 * t2 - 0.0026 * t3) / rad;
+            v += (+0.0000 + 0.0004 * t + 0.0004 * t2 - 0.0026 * t3) / cs_rad;
         if (zn == 2)
             v += (-0.0020 + 0.0044 * t + 0.0213 * t2 - 0.0250 * t3) / 1000000;
     } else {  //其它行星
         double dv = XL0_xzb[(xt - 1) * 3 + zn];
         if (zn == 0)
-            v += -3 * t / rad;
+            v += -3 * t / cs_rad;
         if (zn == 2)
             v += dv / 1000000;
         else
-            v += dv / rad;
+            v += dv / cs_rad;
     }
     return v;
 }
@@ -466,8 +466,8 @@ double XL1_calc(int zn, double t, int n)
     double tn = 1, v = 0, c;
     double t2 = t * t, t3 = t2 * t, t4 = t3 * t, t5 = t4 * t, tx = t - 10;
     if (zn == 0) {
-        v += (3.81034409 + 8399.684730072 * t - 3.319e-05 * t2 + 3.11e-08 * t3 - 2.033e-10 * t4) * rad;  //月球平黄经(弧度)
-        v += 5028.792262 * t + 1.1124406 * t2 + 0.00007699 * t3 - 0.000023479 * t4 - 0.0000000178 * t5;  //岁差(角秒)
+        v += (3.81034409 + 8399.684730072 * t - 3.319e-05 * t2 + 3.11e-08 * t3 - 2.033e-10 * t4) * cs_rad;  //月球平黄经(弧度)
+        v += 5028.792262 * t + 1.1124406 * t2 + 0.00007699 * t3 - 0.000023479 * t4 - 0.0000000178 * t5;     //岁差(角秒)
         if (tx > 0)
             v += -0.866 + 1.43 * tx + 0.054 * tx * tx;  //对公元3000年至公元5000年的拟合,最大误差小于10角秒
     }
@@ -487,7 +487,7 @@ double XL1_calc(int zn, double t, int n)
         v += c * tn;
     }
     if (zn != 2)
-        v /= rad;
+        v /= cs_rad;
     return v;
 }
 
@@ -504,7 +504,7 @@ double gxc_sunLon(double t)
 {                                                                 //太阳光行差,t是世纪数
     double v = -0.043126 + 628.301955 * t - 0.000002732 * t * t;  //平近点角
     double e = 0.016708634 - 0.000042037 * t - 0.0000001267 * t * t;
-    return (-20.49552 * (1 + e * cos(v))) / rad;  //黄经光行差
+    return (-20.49552 * (1 + e * cos(v))) / cs_rad;  //黄经光行差
 }
 
 double gxc_sunLat(double t)
@@ -519,7 +519,7 @@ double gxc_moonLon(double t)
 
 double gxc_moonLat(double t)
 {  //月球纬度光行差,误差0.006"
-    return 0.063 * sin(0.057 + 8433.4662 * t + 0.000064 * t * t) / rad;
+    return 0.063 * sin(0.057 + 8433.4662 * t + 0.000064 * t * t) / cs_rad;
 }
 
 double E_Lon(double t, int n)
@@ -537,7 +537,7 @@ double pGST(double T, double dt)
     //返回格林尼治平恒星时(不含赤经章动及非多项式部分),即格林尼治子午圈的平春风点起算的赤经
     double t = (T + dt) / 36525, t2 = t * t, t3 = t2 * t, t4 = t3 * t;
     return pi2 * (0.7790572732640 + 1.00273781191135448 * T)  //T是UT,下一行的t是力学时(世纪数)
-           + (0.014506 + 4612.15739966 * t + 1.39667721 * t2 - 0.00009344 * t3 + 0.00001882 * t4) / rad;
+           + (0.014506 + 4612.15739966 * t + 1.39667721 * t2 - 0.00009344 * t3 + 0.00001882 * t4) / cs_rad;
 }
 
 double pGST2(double jd)
@@ -605,7 +605,7 @@ double MS_aLon_t2(double W)
          / v;
     double L = M_Lon(t, 20)
                - (4.8950632 + 628.3319653318 * t + 0.000005297 * t * t + 0.0334166 * cos(4.669257 + 628.307585 * t)
-                  + 0.0002061 * cos(2.67823 + 628.307585 * t) * t + 0.000349 * cos(4.6261 + 1256.61517 * t) - 20.5 / rad);
+                  + 0.0002061 * cos(2.67823 + 628.307585 * t) * t + 0.000349 * cos(4.6261 + 1256.61517 * t) - 20.5 / cs_rad);
     v = 7771.38 - 914 * sin(0.7848 + 8328.691425 * t + 0.0001523 * t * t) - 179 * sin(2.543 + 15542.7543 * t)
         - 160 * sin(0.1874 + 7214.0629 * t);
     t += (W - L) / v;
@@ -617,7 +617,7 @@ double S_aLon_t2(double W)
     double v = 628.3319653318;
     double t = (W - 1.75347 - _pi) / v;
     t -= (0.000005297 * t * t + 0.0334166 * cos(4.669257 + 628.307585 * t) + 0.0002061 * cos(2.67823 + 628.307585 * t) * t) / v;
-    t += (W - E_Lon(t, 8) - _pi + (20.5 + 17.2 * sin(2.1824 - 33.75705 * t)) / rad) / v;
+    t += (W - E_Lon(t, 8) - _pi + (20.5 + 17.2 * sin(2.1824 - 33.75705 * t)) / cs_rad) / v;
     return t;
 }
 
@@ -712,17 +712,17 @@ double sunShengJ(double jd, double L, double fa, int sj)
 {  //太阳升降计算。jd儒略日(须接近L当地平午UT)，L地理经度，fa地理纬度，sj=-1升,sj=1降
     jd = floor(jd + 0.5) - L / pi2;
     for (int i = 0; i < 2; i++) {
-        double T = jd / 36525, E = (84381.4060 - 46.836769 * T) / rad;     //黄赤交角
+        double T = jd / 36525, E = (84381.4060 - 46.836769 * T) / cs_rad;  //黄赤交角
         double t = T + (32 * (T + 1.8) * (T + 1.8) - 20) / 86400 / 36525;  //儒略世纪年数,力学时
         double J = (48950621.66 + 6283319653.318 * t + 53 * t * t - 994 + 334166 * cos(4.669257 + 628.307585 * t)
                     + 3489 * cos(4.6261 + 1256.61517 * t) + 2060.6 * cos(2.67823 + 628.307585 * t) * t)
                    / 10000000;
         double sinJ = sin(J), cosJ = cos(J);  //太阳黄经以及它的正余弦值
         double gst = (0.7790572732640 + 1.00273781191135448 * jd) * pi2
-                     + (0.014506 + 4612.15739966 * T + 1.39667721 * T * T) / rad;  //恒星时(子午圈位置)
-        double A = atan2(sinJ * cos(E), cosJ);                                     //太阳赤经
-        double D = asin(sin(E) * sinJ);                                            //太阳赤纬
-        double cosH0 = (sin(-50 * 60 / rad) - sin(fa) * sin(D)) / (cos(fa) * cos(D));
+                     + (0.014506 + 4612.15739966 * T + 1.39667721 * T * T) / cs_rad;  //恒星时(子午圈位置)
+        double A = atan2(sinJ * cos(E), cosJ);                                        //太阳赤经
+        double D = asin(sin(E) * sinJ);                                               //太阳赤纬
+        double cosH0 = (sin(-50 * 60 / cs_rad) - sin(fa) * sin(D)) / (cos(fa) * cos(D));
         if (fabs(cosH0) >= 1)
             return 0;                                             //太阳在地平线上的cos(时角)计算
         jd += rad2rrad(sj * acos(cosH0) - (gst + L - A)) / 6.28;  //(升降时角-太阳时角)/太阳速度
@@ -733,12 +733,13 @@ double sunShengJ(double jd, double L, double fa, int sj)
 double pty_zty(double t)
 {  //时差计算(高精度),t力学时儒略世纪数
     double t2 = t * t, t3 = t2 * t, t4 = t3 * t, t5 = t4 * t;
-    double L = (1753470142 + 628331965331.8 * t + 5296.74 * t2 + 0.432 * t3 - 0.1124 * t4 - 0.00009 * t5) / 1000000000 + _pi - 20.5 / rad;
+    double L =
+        (1753470142 + 628331965331.8 * t + 5296.74 * t2 + 0.432 * t3 - 0.1124 * t4 - 0.00009 * t5) / 1000000000 + _pi - 20.5 / cs_rad;
 
     std::array<double, 3> z = {};
-    double dL = -17.2 * sin(2.1824 - 33.75705 * t) / rad;  //黄经章
-    double dE = 9.2 * cos(2.1824 - 33.75705 * t) / rad;    //交角章
-    double E = hcjj(t) + dE;                               //真黄赤交角
+    double dL = -17.2 * sin(2.1824 - 33.75705 * t) / cs_rad;  //黄经章
+    double dE = 9.2 * cos(2.1824 - 33.75705 * t) / cs_rad;    //交角章
+    double E = hcjj(t) + dE;                                  //真黄赤交角
 
     //地球坐标
     z[0] = XL0_calc(0, 0, t, 50) + _pi + gxc_sunLon(t) + dL;
@@ -755,7 +756,7 @@ double pty_zty2(double t)
 {  //时差计算(低精度),误差约在1秒以内,t力学时儒略世纪数
     double L = (1753470142 + 628331965331.8 * t + 5296.74 * t * t) / 1000000000 + _pi;
     std::array<double, 3> z = {};
-    double E = (84381.4088 - 46.836051 * t) / rad;
+    double E = (84381.4088 - 46.836051 * t) / cs_rad;
     z[0] = XL0_calc(0, 0, t, 5) + _pi, z[1] = 0;  //地球坐标
     z = llrConv(z, E);                            //z太阳地心赤道坐标
     L = rad2rrad(L - z[0]);

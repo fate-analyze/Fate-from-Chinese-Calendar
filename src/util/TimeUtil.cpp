@@ -5,6 +5,7 @@
 // Author: xum
 // ===============================
 #include "TimeUtil.h"
+#include <erfa.h>
 #include "util/DataUtil.h"
 
 using namespace sxwnl;
@@ -47,32 +48,16 @@ double TimeUtil::date2Jd(const Date &date)
 
 Date TimeUtil::jd2Date(double jd)
 {
-    jd += 0.5;
-    int Z = static_cast<int>(jd);
-    double F = jd - Z;
+    Date date {0};
+    double fd;
+    eraJd2cal(jd, 0.0, &date.year_, &date.month_, &date.day_, &fd);
 
-    if (Z >= JULIAN_2_GREGORIAN) {
-        int a = DataUtil::intFloor((Z - 1867216.25) / 36524.25);
-        Z += 1 + a - DataUtil::intFloor(a / 4.0);
-    }
+    char sign;
+    int ihmsf[4];  // [时, 分, 秒, 毫秒]
+    eraD2tf(3, fd, &sign, ihmsf);
+    date.hour_ = ihmsf[0];
+    date.min_ = ihmsf[1];
+    date.sec_ = ihmsf[2];
 
-    Z += 1524;
-    int C = DataUtil::intFloor((Z - 122.1) / 365.25);
-    int D = DataUtil::intFloor(365.25 * C);
-    int E = DataUtil::intFloor((Z - D) / MONTH_2_DAY);
-
-    Date result {};
-    result.month_ = E < 14 ? E - 1 : E - 13;
-    result.year_ = result.month_ > 2 ? C - JULIAN_START : C - JULIAN_START + 1;
-    result.day_ = Z - D - DataUtil::intFloor(MONTH_2_DAY * E) + F;
-
-    // 处理时间部分
-    F *= 24.0;
-    result.hour_ = DataUtil::intFloor(F);
-    F -= result.hour_;
-    F *= 60.0;
-    result.min_ = DataUtil::intFloor(F);
-    F -= result.min_;
-    result.sec_ = F * 60.0;
-    return result;
+    return date;
 }

@@ -233,7 +233,7 @@ std::string nianLiSTR(const int y)
     return s;
 }
 
-Bazi jb2Bazi(const Date &date, const double lng)
+Bazi date2Bazi(const Date &date, const double lng)
 {
     auto jd = date2Jd(date);
     jd = jd + (-8.0) / 24 - J2000;                                           // 格林尼治UT(J2000起算)

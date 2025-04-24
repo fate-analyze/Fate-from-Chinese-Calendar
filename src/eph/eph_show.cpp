@@ -39,7 +39,7 @@ std::string rysCalc(Date d, bool is_utc, bool nasa_r)
         // 日食图表放大计算
         J1 = MSC::mCJ2, W1 = MSC::mCW2, J2 = MSC::sCJ2, W2 = MSC::sCW2;  // 用未做大气折射的来计算日食
         sr = MSC::sRad, mr = MSC::mRad;
-        d1 = j1_j2(J1, W1, J2, W2) * rad, d0 = mr + sr;
+        d1 = j1_j2(J1, W1, J2, W2) * cs_rad, d0 = mr + sr;
         s2 = "此刻月亮本影中心线不经过地球。";
         if (MSC::zx_W != 100) {
             std::string zxsJ = to_str(MSC::zx_J / _pi * 180, 5);
@@ -96,7 +96,7 @@ std::string rysCalc(Date d, bool is_utc, bool nasa_r)
         // 月食图表放大计算
         J1 = MSC::mCJ, W1 = MSC::mCW, J2 = MSC::sCJ + _pi, W2 = -MSC::sCW;
         er = MSC::eShadow, Er = MSC::eShadow2, mr = MSC::e_mRad;  // 用未做大气折射的来计算日食
-        d1 = j1_j2(J1, W1, J2, W2) * rad, d0 = mr + er, d2 = mr + Er;
+        d1 = j1_j2(J1, W1, J2, W2) * cs_rad, d0 = mr + er, d2 = mr + Er;
         s = "本影半径 " + DataUtil::s2min(er, 2) + " 半影半径 " + DataUtil::s2min(Er, 2) + " 月亮地心视半径 " + DataUtil::s2min(mr, 2)
             + "\n" + "影月中心距 " + DataUtil::s2min(d1, 2) + " 影月半径和 " + DataUtil::s2min(d0, 2) + " \n距相切 \033[31m"
             + DataUtil::s2min(d1 - d0, 2) + "\033[0m 距第二相切 " + DataUtil::s2min(d1 - d2, 2);

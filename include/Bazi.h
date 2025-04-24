@@ -28,7 +28,7 @@ constexpr GeoCoord BJ_COORD = {116 + 23 / 60.0, 39.9};
  * @param[in] lng 经度
  * @return 八字
  */
-Bazi jb2Bazi(const Date &date, double lng = BJ_COORD.lng_);
+Bazi date2Bazi(const Date &date, double lng = BJ_COORD.lng_);
 
 }  // namespace sxwnl
 

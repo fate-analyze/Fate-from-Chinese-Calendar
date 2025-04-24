@@ -137,7 +137,7 @@ void MSC::calc(double T, double L, double fa, double high)
     //太阳地平坐标
     z = llrConv(z, _pi / 2 - fa);
     z[0] = rad2mrad(_pi / 2 - z[0]);
-    //z[1] -= 8.794/rad/z[2]*cos(z[1]); //直接在地平坐标中视差修正(这里把地球看为球形,精度比parallax()稍差一些)
+    //z[1] -= 8.794/cs_rad/z[2]*cos(z[1]); //直接在地平坐标中视差修正(这里把地球看为球形,精度比parallax()稍差一些)
     MSC::sDJ = z[0];
     MSC::sDW = z[1];  //方位角,高度角
 
@@ -150,7 +150,7 @@ void MSC::calc(double T, double L, double fa, double high)
     //时差计算
     double t = T / 10, t2 = t * t, t3 = t2 * t, t4 = t3 * t, t5 = t4 * t;
     double Lon = (1753470142 + 6283319653318 * t + 529674 * t2 + 432 * t3 - 1124 * t4 - 9 * t5) / 1000000000 + _pi
-                 - 20.5 / rad;                                 //修正了光行差的太阳平黄经
+                 - 20.5 / cs_rad;                              //修正了光行差的太阳平黄经
     Lon = rad2mrad(Lon - (MSC::sCJ - MSC::dL * cos(MSC::E)));  //(修正了光行差的平黄经)-(不含dL*cos(E)的视赤经)
     if (Lon > _pi)
         Lon -= pi2;       //得到时差,单位是弧度
@@ -166,10 +166,10 @@ void MSC::calc(double T, double L, double fa, double high)
     MSC::sRad = 959.63 / MSC::sR2;     //太阳视半径(角秒)
     MSC::e_mRad = cs_sMoon / MSC::mR;  //月亮地心视半径(角秒)
     MSC::eShadow =
-        (cs_rEarA / MSC::mR * rad - (959.63 - 8.794) / MSC::sR) * 51 / 50;  //地本影在月球向径处的半径(角秒),式中51/50是大气厚度补偿
+        (cs_rEarA / MSC::mR * cs_rad - (959.63 - 8.794) / MSC::sR) * 51 / 50;  //地本影在月球向径处的半径(角秒),式中51/50是大气厚度补偿
     MSC::eShadow2 =
-        (cs_rEarA / MSC::mR * rad + (959.63 + 8.794) / MSC::sR) * 51 / 50;  //地半影在月球向径处的半径(角秒),式中51/50是大气厚度补偿
-    MSC::mIll = moonIll(T);                                                 //月亮被照面比例
+        (cs_rEarA / MSC::mR * cs_rad + (959.63 + 8.794) / MSC::sR) * 51 / 50;  //地半影在月球向径处的半径(角秒),式中51/50是大气厚度补偿
+    MSC::mIll = moonIll(T);                                                    //月亮被照面比例
 
     //中心食计算
     if (fabs(rad2rrad(MSC::mCJ - MSC::sCJ)) < 50.0 / 180.0 * _pi) {

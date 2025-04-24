@@ -33,12 +33,13 @@ void YS_PL::lecXY(double jd, RE0 &re)
     zm[1] += gxc_moonLat(T);  //补上月球光行差就可以了
 
     //=======视半径=======
-    re.e_mRad = cs_sMoon / zm[2];                                                 //月亮地心视半径(角秒)
-    re.eShadow = (cs_rEarA / zm[2] * rad - (959.63 - 8.794) / zs[2]) * 51 / 50;   //地本影在月球向径处的半径(角秒),式中51/50是大气厚度补偿
-    re.eShadow2 = (cs_rEarA / zm[2] * rad + (959.63 + 8.794) / zs[2]) * 51 / 50;  //地半影在月球向径处的半径(角秒),式中51/50是大气厚度补偿
+    re.e_mRad = cs_sMoon / zm[2];                                                   //月亮地心视半径(角秒)
+    re.eShadow = (cs_rEarA / zm[2] * cs_rad - (959.63 - 8.794) / zs[2]) * 51 / 50;  //地本影在月球向径处的半径(角秒),式中51/50是大气厚度补偿
+    re.eShadow2 =
+        (cs_rEarA / zm[2] * cs_rad + (959.63 + 8.794) / zs[2]) * 51 / 50;  //地半影在月球向径处的半径(角秒),式中51/50是大气厚度补偿
     re.x = rad2rrad(zm[0] + _pi - zs[0]) * cos((zm[1] - zs[1]) / 2);
     re.y = zm[1] + zs[1];
-    re.mr = re.e_mRad / rad, re.er = re.eShadow / rad, re.Er = re.eShadow2 / rad;
+    re.mr = re.e_mRad / cs_rad, re.er = re.eShadow / cs_rad, re.Er = re.eShadow2 / cs_rad;
     re.t = jd;
 }
 
@@ -55,8 +56,8 @@ void YS_PL::lecMax(double jd)
     RE0 g = {}, G = {};
 
     //求极值(平均误差数秒)
-    double u = -18461 * sin(0.057109 + 0.23089571958 * jd) * 0.23090 / rad;  //月日黄纬速度差
-    double v = (M_v(jd / 36525) - E_v(jd / 36525)) / 36525;                  //月日黄经速度差
+    double u = -18461 * sin(0.057109 + 0.23089571958 * jd) * 0.23090 / cs_rad;  //月日黄纬速度差
+    double v = (M_v(jd / 36525) - E_v(jd / 36525)) / 36525;                     //月日黄经速度差
     YS_PL::lecXY(jd, G);
     jd -= (G.y * u + G.x * v) / (u * u + v * v);  //极值时间
 

@@ -14,9 +14,7 @@ API测试
 #include "eph/eph0.h"
 #include "eph/eph_show.h"
 #include "lunar/lunar.h"
-#include "mylib/lat_lon_data.h"
 #include "mylib/mystl/my_string.h"
-#include "mylib/tool.h"
 #include "util/DataUtil.h"
 
 using namespace sxwnl;
@@ -60,7 +58,7 @@ void tianXiang(int xm, int xm2, Date dat, int n = 10)
                 re = moonNode(jd, 1);  //求升
             if (xm == 4)
                 re = moonNode(jd, 0);  //求降
-            s += txFormatT(re[0]) + DataUtil::rad2str(rad2mrad(re[1]), 0) + "\n";
+            s += txFormatT(re[0]) + DataUtil::rad2str(rad2mrad(re[1]), ANGLE_FORMAT::STANDARD) + "\n";
         }
     }
     if (xm == 5 || xm == 6) {
@@ -138,11 +136,11 @@ void tianXiang(int xm, int xm2, Date dat, int n = 10)
 void pCalc(int xt, Date dat, int n = 10, int dt = 1, bool Cd_ut = 1)
 {
     //行星星历计算
-    double jd = date2Jd({dat.year_, dat.month_, dat.day_, dat.hour_, dat.min_, dat.sec_}) - J2000;  //取屏幕时间
+    double jd = date2Jd(dat) - J2000;  //取屏幕时间
     if (Cd_ut)
-        jd += -8.0 / 24 + dt_T(jd);  //转为力学时
-    double L = GeoCoord.lng_ / 180 * std::numbers::pi;    //地标
-    double fa = GeoCoord.lat_ / 180 * std::numbers::pi;
+        jd += -8.0 / 24 + dt_T(jd);                     //转为力学时
+    double L = BJ_COORD.lng_ / 180 * std::numbers::pi;  //地标
+    double fa = BJ_COORD.lat_ / 180 * std::numbers::pi;
     if (n > 1000) {
         std::cout << "个数太多了" << std::endl;
         return;
@@ -172,7 +170,7 @@ void suoCalc(int y, int n = 24, int jiao = 0)
     int n0 = DataUtil::intFloor(y * (365.2422 / 29.53058886));  //截止当年首经历朔望的个数
     for (i = 0; i < n; i++) {
         T = MS_aLon_t((n0 + i + jiao / 360.0) * 2 * std::numbers::pi);  //精确时间计算,入口参数是当年各朔望黄经
-        r = XL1_calc(2, T, -1);                             //计算月亮
+        r = XL1_calc(2, T, -1);                                         //计算月亮
         s2 += DataUtil::jd2str(T * 36525 + J2000 + 8.0 / 24 - dt_T(T * 36525)) + " " + to_str(r, 2) + "千米\n";  //日期转为字串
         if (i % 50 == 0)
             s += s2, s2 = "";
@@ -190,7 +188,7 @@ void qiCalc(int y, int n = 24)
     std::string s = "", s2 = "";
 
     for (i = 0; i < n; i++) {
-        T = S_aLon_t((y + i * 15 / 360.0 + 1) * 2 * std::numbers::pi);                                      //精确节气时间计算
+        T = S_aLon_t((y + i * 15 / 360.0 + 1) * 2 * std::numbers::pi);                                    //精确节气时间计算
         s2 += DataUtil::jd2str(T * 36525 + J2000 + 8 / 24.0 - dt_T(T * 36525)) + str_jqmc[(i + 6) % 24];  //日期转为字串
         if (i % 2 == 1)
             s2 += " 视黄经" + std::to_string(i * 15) + "\n";
@@ -292,8 +290,8 @@ void dingSuo_v()
 
 void ML_calc(Date dat)
 {
-    double jd = date2Jd({dat.year_, dat.month_, dat.day_, dat.hour_, dat.min_, dat.sec_});
-    auto ob = jb2Bazi(dat, GeoCoord.lng_);  //八字计算
+    double jd = date2Jd(dat);
+    auto ob = date2Bazi(dat, BJ_COORD.lng_);  //八字计算
 
     std::cout << "\033[31;1m[日标]：\033[0m" << "公历 " << dat.year_ << "-" << dat.month_ << "-" << dat.day_ << " 儒略日数 "
               << DataUtil::intFloor(jd + 0.5) << " 距2000年首" << DataUtil::intFloor(jd + 0.5 - J2000) << "日\n"

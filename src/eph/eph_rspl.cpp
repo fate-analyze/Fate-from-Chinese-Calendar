@@ -57,8 +57,8 @@ void RS_PL::secXY(double jd, double L, double fa, double high, _SECXY &re)
     re.sCJ2 = z[0], re.sCW2 = z[1], re.sR2 = z[2];  //修正了视差的赤道坐标
 
     //=======视半径========
-    re.mr = cs_sMoon / re.mR2 / rad;
-    re.sr = 959.63 / re.sR2 / rad * cs_AU;
+    re.mr = cs_sMoon / re.mR2 / cs_rad;
+    re.sr = 959.63 / re.sR2 / cs_rad * cs_AU;
     if (RS_PL::nasa_r)
         re.mr *= cs_sMoon2 / cs_sMoon;  //0.99925;
     //=======日月赤经纬差转为日面中心直角坐标(用于日食)==============
@@ -260,8 +260,8 @@ void RS_PL::zbXY(_ZB &p, double L, double fa)
     s = parallax(s, p.g + L - p.S[0], fa, 0);  //修正了视差的赤道坐标
     m = parallax(m, p.g + L - p.M[0], fa, 0);  //修正了视差的赤道坐标
     //=======视半径========
-    p.mr = cs_sMoon / m[2] / rad;
-    p.sr = 959.63 / s[2] / rad * cs_AU;
+    p.mr = cs_sMoon / m[2] / cs_rad;
+    p.sr = 959.63 / s[2] / cs_rad * cs_AU;
     //=======日月赤经纬差转为日面中心直角坐标(用于日食)==============
     p.x = rad2rrad(m[0] - s[0]) * cos((m[1] + s[1]) / 2.0);
     p.y = m[1] - s[1];
@@ -273,7 +273,7 @@ void RS_PL::p2p(double L, double fa, _GJW &re, bool fAB, int f)
     RS_PL::zbXY(RS_PL::P, L, fa);
     RS_PL::zbXY(RS_PL::Q, L, fa);
 
-    double u = q.y - p.y, v = q.x - p.x, a = sqrt(u * u + v * v), r = 959.63 / p.S[2] / rad * cs_AU;
+    double u = q.y - p.y, v = q.x - p.x, a = sqrt(u * u + v * v), r = 959.63 / p.S[2] / cs_rad * cs_AU;
     double W = p.S[1] + f * r * v / a, J = p.S[0] - f * r * u / a / cos((W + p.S[1]) / 2.0), R = p.S[2];
     std::array<double, 3> AA = fAB ? RS_PL::A : RS_PL::B;
 
