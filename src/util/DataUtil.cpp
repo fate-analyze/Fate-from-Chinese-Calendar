@@ -7,10 +7,18 @@
 #include "DataUtil.h"
 #include <cmath>
 #include <format>
+#include <iomanip>
 #include <numbers>
+#include <sstream>
 #include "util/TimeUtil.h"
 
 using namespace sxwnl;
+
+constexpr std::string_view ANGLE_FORMAT_STR[3][3] = {
+    {"°",  "'",  "\""},
+    {"度", "分", "秒"},
+    {"h",  "m",  "s" },
+};
 
 std::string DataUtil::date2str(Date date)
 {
@@ -30,13 +38,13 @@ std::string DataUtil::date2str(Date date)
     return std::format("{:5}-{:02}-{:02} {:02}:{:02}:{:02}", date.year_, date.month_, date.day_, h, m, s);
 }
 
-std::string DataUtil::rad2str(double radian, bool flag, int precision)
+std::string DataUtil::rad2str(double radian, ANGLE_FORMAT format, int precision)
 {
     bool negative = radian < 0;
     radian = std::abs(radian);
 
     // 单位转换
-    double converted = flag ? (radian * 12 / std::numbers::pi) : (radian * 180.0 / std::numbers::pi);
+    double converted = (format == ANGLE_FORMAT::TIME) ? (radian * 12 / std::numbers::pi) : (radian * 180.0 / std::numbers::pi);
 
     // 分解各个分量
     int a = std::floor(converted);
@@ -60,15 +68,13 @@ std::string DataUtil::rad2str(double radian, bool flag, int precision)
         }
     }
 
-    // 格式符号和单位
-    const auto [u1, u2, u3] = flag ? std::make_tuple("h", "m", "s") : std::make_tuple("°", "'", "\"");
-
     // 构建字符串
-    auto fmt_str = precision > 0 ? std::format("{:3d}{}{:02d}{}{:02d}.{:0{}d}{}", a, u1, b, u2, c, decimal, precision, u3)
-                                 : std::format("{:3d}{}{:02d}{}{:02d}{}", a, u1, b, u2, c, u3);
+    const auto &units = ANGLE_FORMAT_STR[static_cast<int>(format)];
+    auto fmt_str = precision > 0 ? std::format("{:3d}{}{:02d}{}{:02d}.{:0{}d}{}", a, units[0], b, units[1], c, decimal, precision, units[2])
+                                 : std::format("{:3d}{}{:02d}{}{:02d}{}", a, units[0], b, units[1], c, units[2]);
 
     // 替换空格为符号占位符
-    auto pos = fmt_str.find_first_not_of(" ");
+    const auto pos = fmt_str.find_first_not_of(' ');
     if (!negative) {
         return fmt_str.substr(pos);
     }
@@ -79,4 +85,40 @@ std::string DataUtil::rad2str(double radian, bool flag, int precision)
         fmt_str.replace(0, pos - 0, "-");
     }
     return fmt_str;
+}
+
+std::string DataUtil::s2min(double sec, int precision, ANGLE_FORMAT format)
+{
+    std::stringstream ss;
+    if (sec < 0) {
+        sec = -sec;
+        ss << '-';
+    }
+
+    const auto &units = ANGLE_FORMAT_STR[static_cast<int>(format)];
+    int min = intFloor(sec / 60);
+    double seconds = sec - min * 60;
+
+    ss << min << units[1] << std::fixed << std::setprecision(precision) << seconds << units[2];
+    return ss.str();
+}
+
+void DataUtil::strReplace(std::string &str, const std::string &from, const std::string &to)
+{
+    std::string::size_type pos = 0;
+    while ((pos = str.find(from, pos)) != std::string::npos) {
+        str.replace(pos, from.length(), to);
+        pos += to.length();
+    }
+}
+
+std::string DataUtil::paddingStrHead(std::string_view src, char pad, int padNum)
+{
+    std::stringstream ss;
+    for (decltype(padNum) i = 0; i < padNum; ++i) {
+        ss << pad;
+    }
+
+    ss << src;
+    return ss.str();
 }

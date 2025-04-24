@@ -17,8 +17,8 @@ struct Bazi {
 
 /**
  * 根据日期、地理经度计算八字
- * @param date 日期
- * @param lng 经度，默认为北京所在经度
+ * @param[in] date 日期
+ * @param[in] lng 经度，默认为北京所在经度
  * @return 八字
  */
 Bazi jb2Bazi(const Date &date, double lng = (116 + 23 / 60.0));

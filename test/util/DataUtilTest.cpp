@@ -34,20 +34,21 @@ TEST_F(UTMain, jd2hour)
 
 TEST_F(UTMain, rad2str)
 {
-    EXPECT_EQ(DataUtil::DataUtil::rad2str(0, false, 0), "0°00'00\"");
-    EXPECT_EQ(DataUtil::DataUtil::rad2str(std::numbers::pi, false, 2), "180°00'00.00\"");
-    EXPECT_EQ(DataUtil::DataUtil::rad2str(std::numbers::pi / 2, false, 2), "90°00'00.00\"");
-    EXPECT_EQ(DataUtil::DataUtil::rad2str(std::numbers::pi / 6, false, 2), "30°00'00.00\"");
-    EXPECT_EQ(DataUtil::DataUtil::rad2str(-std::numbers::pi / 12, false, 1), "-15°00'00.0\"");
+    EXPECT_EQ(DataUtil::DataUtil::rad2str(0, ANGLE_FORMAT::STANDARD, 0), "0°00'00\"");
+    EXPECT_EQ(DataUtil::DataUtil::rad2str2(0), "0°00'");
+    EXPECT_EQ(DataUtil::DataUtil::rad2str(std::numbers::pi, ANGLE_FORMAT::STANDARD, 2), "180°00'00.00\"");
+    EXPECT_EQ(DataUtil::DataUtil::rad2str(std::numbers::pi / 2, ANGLE_FORMAT::STANDARD, 2), "90°00'00.00\"");
+    EXPECT_EQ(DataUtil::DataUtil::rad2str(std::numbers::pi / 6, ANGLE_FORMAT::STANDARD, 2), "30°00'00.00\"");
+    EXPECT_EQ(DataUtil::DataUtil::rad2str(-std::numbers::pi / 12, ANGLE_FORMAT::STANDARD, 1), "-15°00'00.0\"");
 
-    EXPECT_EQ(DataUtil::DataUtil::rad2str(0, true, 3), "0h00m00.000s");
-    EXPECT_EQ(DataUtil::DataUtil::rad2str(std::numbers::pi / 6, true, 2), "2h00m00.00s");
-    EXPECT_EQ(DataUtil::DataUtil::rad2str(-std::numbers::pi / 12, true, 1), "-1h00m00.0s");
+    EXPECT_EQ(DataUtil::DataUtil::rad2str(0, ANGLE_FORMAT::TIME, 3), "0h00m00.000s");
+    EXPECT_EQ(DataUtil::DataUtil::rad2str(std::numbers::pi / 6, ANGLE_FORMAT::TIME, 2), "2h00m00.00s");
+    EXPECT_EQ(DataUtil::DataUtil::rad2str(-std::numbers::pi / 12, ANGLE_FORMAT::TIME, 1), "-1h00m00.0s");
 
-    EXPECT_EQ(DataUtil::DataUtil::rad2str(1.23456e-4, false, 0), "0°00'25\"");
-    EXPECT_EQ(DataUtil::DataUtil::rad2str(0.123456, false, 3), "7°04'24.628\"");
-    EXPECT_EQ(DataUtil::DataUtil::rad2str(2.987654, true, 1), "11h24m43.2s");
+    EXPECT_EQ(DataUtil::DataUtil::rad2str(1.23456e-4, ANGLE_FORMAT::STANDARD, 0), "0°00'25\"");
+    EXPECT_EQ(DataUtil::DataUtil::rad2str(0.123456, ANGLE_FORMAT::STANDARD, 3), "7°04'24.628\"");
+    EXPECT_EQ(DataUtil::DataUtil::rad2str(2.987654, ANGLE_FORMAT::TIME, 1), "11h24m43.2s");
 
-    EXPECT_EQ(DataUtil::DataUtil::rad2str(std::numbers::pi / 180.0 * 59.99999 / 60 / 60, false, 2), "0°01'00.00\"");
-    EXPECT_EQ(DataUtil::DataUtil::rad2str(2 * std::numbers::pi, true, 0), "24h00m00s");
+    EXPECT_EQ(DataUtil::DataUtil::rad2str(std::numbers::pi / 180.0 * 59.99999 / 60 / 60, ANGLE_FORMAT::STANDARD, 2), "0°01'00.00\"");
+    EXPECT_EQ(DataUtil::DataUtil::rad2str(2 * std::numbers::pi, ANGLE_FORMAT::TIME, 0), "24h00m00s");
 }

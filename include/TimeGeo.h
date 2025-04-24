@@ -36,7 +36,7 @@ double date2Jd(const Date &date);
 
 /**
  * 将儒略日数转公历
- * @param jd 儒略日
+ * @param[in] jd 儒略日
  * @return 公历
  */
 Date jd2Date(double jd);

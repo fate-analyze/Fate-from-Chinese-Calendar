@@ -3,7 +3,6 @@
 #include "eph.h"
 #include "eph0.h"
 #include "mylib/mystl/my_string.h"
-#include "mylib/tool.h"
 #include "util/DataUtil.h"
 
 using namespace sxwnl;
@@ -186,21 +185,27 @@ std::string MSC::toStr(bool fs)
     std::stringstream ss;
     ss << "-------------------------------------------\n";
     ss << "平太阳 " << DataUtil::jd2hour(MSC::pty) << " 真太阳 " << DataUtil::jd2hour(MSC::zty) << "\n";
-    ss << "时差 " << m2fm(MSC::sc * 86400, 2, 1) << " 月亮被照亮 " << to_str(MSC::mIll * 100, 2) << "% ";
+    ss << "时差 " << DataUtil::s2min(MSC::sc * 86400, 2, ANGLE_FORMAT::MANDARIN) << " 月亮被照亮 " << to_str(MSC::mIll * 100, 2) << "% ";
     ss << "\n";
 
     ss << "-------------------------------------------\n表一       月亮            太阳\n";
-    ss << "视黄经 " << DataUtil::rad2str(MSC::mHJ, false) << "  " << DataUtil::rad2str(MSC::sHJ, false) << "\n";
-    ss << "视黄纬 " << DataUtil::rad2str(MSC::mHW, false) << "  " << DataUtil::rad2str(MSC::sHW, false) << "\n";
-    ss << "视赤经 " << DataUtil::rad2str(MSC::mCJ, true) << "  " << DataUtil::rad2str(MSC::sCJ, true) << "\n";
-    ss << "视赤纬 " << DataUtil::rad2str(MSC::mCW, false) << "  " << DataUtil::rad2str(MSC::sCW, false) << "\n";
+    ss << "视黄经 " << DataUtil::rad2str(MSC::mHJ, ANGLE_FORMAT::STANDARD) << "  " << DataUtil::rad2str(MSC::sHJ, ANGLE_FORMAT::STANDARD)
+       << "\n";
+    ss << "视黄纬 " << DataUtil::rad2str(MSC::mHW, ANGLE_FORMAT::STANDARD) << "  " << DataUtil::rad2str(MSC::sHW, ANGLE_FORMAT::STANDARD)
+       << "\n";
+    ss << "视赤经 " << DataUtil::rad2str(MSC::mCJ, ANGLE_FORMAT::TIME) << "  " << DataUtil::rad2str(MSC::sCJ, ANGLE_FORMAT::TIME) << "\n";
+    ss << "视赤纬 " << DataUtil::rad2str(MSC::mCW, ANGLE_FORMAT::STANDARD) << "  " << DataUtil::rad2str(MSC::sCW, ANGLE_FORMAT::STANDARD)
+       << "\n";
     ss << "距离    " << to_str(MSC::mR, 2) << "千米    " << to_str(MSC::sR, 8) << "AU" << "\n";
 
     ss << "-------------------------------------------\n表二       月亮            太阳\n";
-    ss << "方位角 " << DataUtil::rad2str(MSC::mPJ, false) << "  " << DataUtil::rad2str(MSC::sPJ, false) << "\n";
-    ss << "高度角 " << DataUtil::rad2str(MSC::mPW, false) << "  " << DataUtil::rad2str(MSC::sPW, false) << "\n";
-    ss << "时角   " << DataUtil::rad2str(MSC::mShiJ, false) << "  " << DataUtil::rad2str(MSC::sShiJ, false) << "\n";
-    ss << "视半径   " << m2fm(MSC::mRad, 2, 0) << "       " << m2fm(MSC::sRad, 2, 0) << " (观测点)\n";
+    ss << "方位角 " << DataUtil::rad2str(MSC::mPJ, ANGLE_FORMAT::STANDARD) << "  " << DataUtil::rad2str(MSC::sPJ, ANGLE_FORMAT::STANDARD)
+       << "\n";
+    ss << "高度角 " << DataUtil::rad2str(MSC::mPW, ANGLE_FORMAT::STANDARD) << "  " << DataUtil::rad2str(MSC::sPW, ANGLE_FORMAT::STANDARD)
+       << "\n";
+    ss << "时角   " << DataUtil::rad2str(MSC::mShiJ, ANGLE_FORMAT::STANDARD) << "  "
+       << DataUtil::rad2str(MSC::sShiJ, ANGLE_FORMAT::STANDARD) << "\n";
+    ss << "视半径   " << DataUtil::s2min(MSC::mRad, 2) << "       " << DataUtil::s2min(MSC::sRad, 2) << " (观测点)\n";
 
     if (fs) {
         ss << "-------------------------------------------\n";
@@ -208,7 +213,7 @@ std::string MSC::toStr(bool fs)
         ss << " ΔT=" << to_str(MSC::dt * 86400, 1) << "秒\n";
         ss << "黄经章 " << to_str(MSC::dL / pi2 * 360 * 3600, 2) << "\" ";
         ss << "交角章 " << to_str(MSC::dE / pi2 * 360 * 3600, 2) << "\" ";
-        ss << "ε=" << DataUtil::rad2str(MSC::E, false) << "\n";
+        ss << "ε=" << DataUtil::rad2str(MSC::E, ANGLE_FORMAT::STANDARD) << "\n";
         ss << "-------------------------------------------\n";
     }
     return ss.str();

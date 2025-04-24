@@ -1,7 +1,6 @@
 #include "eph_rsgs.h"
 #include "eph.h"
 #include "eph0.h"
-#include "mylib/tool.h"
 #include "util/DataUtil.h"
 
 using namespace sxwnl;
@@ -408,28 +407,28 @@ std::string RS_GS::jieX3(double jd)
         //南北界
         auto p = nanbei(M, vx, vy, +1, r, I);
         if (p[1] != 100)
-            s2 += rad2str2(p[0]) + "  " + rad2str2(p[1]) + " |", k++;
+            s2 += DataUtil::rad2str2(p[0]) + "  " + DataUtil::rad2str2(p[1]) + " |", k++;
         else
             s2 += "-------------------|";  //半影北界
         p = nanbei(M, vx, vy, +1, B.r2, I);
         if (p[1] != 100)
-            s2 += rad2str2(p[0]) + "  " + rad2str2(p[1]) + " |", k++;
+            s2 += DataUtil::rad2str2(p[0]) + "  " + DataUtil::rad2str2(p[1]) + " |", k++;
         else
             s2 += "-------------------|";  //本影北界
         auto pp = bseXY2db(M[0], M[1], I, true);
         p = {pp[0], pp[1], pp[2]};
         if (p[1] != 100)
-            s2 += rad2str2(p[0]) + "  " + rad2str2(p[1]) + " |", k++;
+            s2 += DataUtil::rad2str2(p[0]) + "  " + DataUtil::rad2str2(p[1]) + " |", k++;
         else
             s2 += "-------------------|";  //中心线
         p = RS_GS::nanbei(M, vx, vy, -1, B.r2, I);
         if (p[1] != 100)
-            s2 += rad2str2(p[0]) + "  " + rad2str2(p[1]) + " |", k++;
+            s2 += DataUtil::rad2str2(p[0]) + "  " + DataUtil::rad2str2(p[1]) + " |", k++;
         else
             s2 += "-------------------|";  //本影南界
         p = RS_GS::nanbei(M, vx, vy, -1, r, I);
         if (p[1] != 100)
-            s2 += rad2str2(p[0]) + " " + rad2str2(p[1]) + " ", k++;
+            s2 += DataUtil::rad2str2(p[0]) + " " + DataUtil::rad2str2(p[1]) + " ", k++;
         else
             s2 += "------------------- ";  //半影南界
         if (k)

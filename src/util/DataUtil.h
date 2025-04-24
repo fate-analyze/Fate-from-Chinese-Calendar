@@ -37,6 +37,13 @@
 
 namespace sxwnl {
 
+enum class ANGLE_FORMAT
+{
+    STANDARD = 0,  // 23°59" 48.23"
+    MANDARIN,      // 23时59分48.23秒
+    TIME,          // 18h 29m 44.52s
+};
+
 class DataUtil {
 public:
     static int intFloor(const double v) { return static_cast<int>(std::floor(v)); }
@@ -49,11 +56,23 @@ public:
     }
 
     /**
-     * @param radian 弧度
-     * @param flag true采用18h 29m 44.52s格式；false采用23°59" 48.23"格式
-     * @param precision 小数保留位数
+     * @param[in] radian 弧度
+     * @param[in] precision 秒的保留小数位数
      */
-    static std::string rad2str(double radian, bool flag, int precision = 2);
+    static std::string rad2str(double radian, ANGLE_FORMAT format, int precision = 2);
+    static std::string rad2str2(double radian)
+    {
+        const auto rad_str = rad2str(radian, ANGLE_FORMAT::STANDARD, 0);
+        return rad_str.substr(0, rad_str.length() - 3);  // 精度为分
+    }
+    /**
+     * @brief 秒转为分和秒的格式
+     * @param[in] precision 秒的保留小数位数
+     */
+    static std::string s2min(double sec, int precision, ANGLE_FORMAT format = ANGLE_FORMAT::STANDARD);
+
+    static void strReplace(std::string &str, const std::string &from, const std::string &to);
+    static std::string paddingStrHead(std::string_view src, char pad, int padNum);
 };
 
 }  // namespace sxwnl

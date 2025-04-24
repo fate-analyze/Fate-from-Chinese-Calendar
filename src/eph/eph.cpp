@@ -2,7 +2,6 @@
 #include <cstring>
 #include "eph0.h"
 #include "mylib/mystl/my_string.h"
-#include "mylib/tool.h"
 #include "util/DataUtil.h"
 
 namespace sxwnl {
@@ -230,15 +229,18 @@ std::string xingX(int xt, double jd, double L, double fa)
 
         //地心黄道及地心赤道
         z[0] = rad2mrad(z[0] + dL);  //补章动
-        s += "视黄经 " + DataUtil::rad2str(z[0], false) + " 视黄纬 " + DataUtil::rad2str(z[1], false) + " 地心距 " + to_str(ra, rfn) + "\n";
+        s += "视黄经 " + DataUtil::rad2str(z[0], ANGLE_FORMAT::STANDARD) + " 视黄纬 " + DataUtil::rad2str(z[1], ANGLE_FORMAT::STANDARD)
+             + " 地心距 " + to_str(ra, rfn) + "\n";
 
         z = llrConv(z, E);  //转到赤道坐标
-        s += "视赤经 " + DataUtil::rad2str(z[0], true) + " 视赤纬 " + DataUtil::rad2str(z[1], false) + " 光行距 " + to_str(rb, rfn) + "\n";
+        s += "视赤经 " + DataUtil::rad2str(z[0], ANGLE_FORMAT::TIME) + " 视赤纬 " + DataUtil::rad2str(z[1], ANGLE_FORMAT::STANDARD)
+             + " 光行距 " + to_str(rb, rfn) + "\n";
     } else if (xt < 10 && xt >= 0) {
         a = p_coord(0, T, -1, -1, -1);   //地球
         z = p_coord(xt, T, -1, -1, -1);  //行星
         z[0] = rad2mrad(z[0]);
-        s += "黄经一 " + DataUtil::rad2str(z[0], false) + " 黄纬一 " + DataUtil::rad2str(z[1], false) + " 向径一 " + to_str(z[2], rfn) + "\n";
+        s += "黄经一 " + DataUtil::rad2str(z[0], ANGLE_FORMAT::STANDARD) + " 黄纬一 " + DataUtil::rad2str(z[1], ANGLE_FORMAT::STANDARD)
+             + " 向径一 " + to_str(z[2], rfn) + "\n";
 
         //地心黄道
         z = h2g(z, a);
@@ -254,14 +256,17 @@ std::string xingX(int xt, double jd, double L, double fa)
         z = h2g(z2, a2);
         rc = z[2];                   //rc视距
         z[0] = rad2mrad(z[0] + dL);  //补章动
-        s += "视黄经 " + DataUtil::rad2str(z[0], false) + " 视黄纬 " + DataUtil::rad2str(z[1], false) + " 地心距 " + to_str(ra, rfn) + "\n";
+        s += "视黄经 " + DataUtil::rad2str(z[0], ANGLE_FORMAT::STANDARD) + " 视黄纬 " + DataUtil::rad2str(z[1], ANGLE_FORMAT::STANDARD)
+             + " 地心距 " + to_str(ra, rfn) + "\n";
 
         z = llrConv(z, E);  //转到赤道坐标
-        s += "视赤经 " + DataUtil::rad2str(z[0], true) + " 视赤纬 " + DataUtil::rad2str(z[1], false) + " 光行距 " + to_str(rb, rfn) + "\n";
+        s += "视赤经 " + DataUtil::rad2str(z[0], ANGLE_FORMAT::TIME) + " 视赤纬 " + DataUtil::rad2str(z[1], ANGLE_FORMAT::STANDARD)
+             + " 光行距 " + to_str(rb, rfn) + "\n";
     }
     double sj = rad2rrad(gst + L - z[0]);  //得到天体时角
     z = parallax(z, sj, fa, 0);            //视差修正
-    s += "站赤经 " + DataUtil::rad2str(z[0], true) + " 站赤纬 " + DataUtil::rad2str(z[1], false) + " 视距离 " + to_str(rc, rfn) + "\n";
+    s += "站赤经 " + DataUtil::rad2str(z[0], ANGLE_FORMAT::TIME) + " 站赤纬 " + DataUtil::rad2str(z[1], ANGLE_FORMAT::STANDARD) + " 视距离 "
+         + to_str(rc, rfn) + "\n";
 
     z[0] += std::numbers::pi / 2 - gst - L;     //修正了视差的赤道坐标
     z = llrConv(z, std::numbers::pi / 2 - fa);  //转到时角坐标转到地平坐标
@@ -269,8 +274,9 @@ std::string xingX(int xt, double jd, double L, double fa)
 
     if (z[1] > 0)
         z[1] += MQC(z[1]);  //大气折射修正
-    s += "方位角 " + DataUtil::rad2str(z[0], false) + " 高度角 " + DataUtil::rad2str(z[1], false) + "\n";
-    s += "恒星时 " + DataUtil::rad2str(rad2mrad(gstPing), true) + "(平) " + DataUtil::rad2str(rad2mrad(gst), true) + "(真)\n";
+    s += "方位角 " + DataUtil::rad2str(z[0], ANGLE_FORMAT::STANDARD) + " 高度角 " + DataUtil::rad2str(z[1], ANGLE_FORMAT::STANDARD) + "\n";
+    s += "恒星时 " + DataUtil::rad2str(rad2mrad(gstPing), ANGLE_FORMAT::TIME) + "(平) "
+         + DataUtil::rad2str(rad2mrad(gst), ANGLE_FORMAT::TIME) + "(真)\n";
 
     return s;
 }

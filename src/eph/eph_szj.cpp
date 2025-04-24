@@ -1,7 +1,6 @@
 #include "eph_szj.h"
 #include <array>
 #include "eph0.h"
-#include "mylib/tool.h"
 #include "util/DataUtil.h"
 
 using namespace sxwnl;
@@ -68,8 +67,8 @@ SJ SZJ::Mt(double jd)
 void SZJ::Scoord(double jd, int xm, SJ &r)
 {  //章动同时影响恒星时和天体坐标,所以不计算章动。返回时角及赤经纬
     std::array<double, 3> z = {E_Lon((jd + SZJ::dt) / 36525, 5) + std::numbers::pi - 20.5 / rad, 0, 1};  //太阳坐标(修正了光行差)
-    z = llrConv(z, SZJ::E);                                                                  //转为赤道坐标
-    r.H = rad2rrad(pGST(jd, SZJ::dt) + SZJ::L - z[0]);                                       //得到此刻天体时角
+    z = llrConv(z, SZJ::E);                                                                              //转为赤道坐标
+    r.H = rad2rrad(pGST(jd, SZJ::dt) + SZJ::L - z[0]);                                                   //得到此刻天体时角
 
     if (xm == 10 || xm == 1)
         r.H1 = SZJ::getH(-50 * 60 / rad, z[1]);  //地平以下50分
@@ -102,7 +101,7 @@ SJ SZJ::St(double jd)
     r.c3 += (-r.H4 - r.H) / sv;  //天文晨
     r.h3 += (r.H4 - r.H) / sv;   //天文昏
 
-    r.z += (0 - r.H) / sv;     //中天
+    r.z += (0 - r.H) / sv;                 //中天
     r.x += (std::numbers::pi - r.H) / sv;  //下中天
     SZJ::Scoord(r.s, 1, r);
     r.s += rad2rrad(-r.H1 - r.H) / sv;

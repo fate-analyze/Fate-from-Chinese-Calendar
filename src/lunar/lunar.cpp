@@ -3,7 +3,6 @@
 #include "Bazi.h"
 #include "eph/eph0.h"
 #include "lunar_ssq.h"
-#include "mylib/tool.h"
 #include "util/DataUtil.h"
 
 namespace sxwnl {
@@ -241,7 +240,7 @@ Bazi jb2Bazi(const Date &date, const double lng)
     const double jd2 = jd + dt_T(jd);                                        // 力学时
     const double w = S_aLon(jd2 / 36525.0, -1);                              // 此刻太阳视黄经
     const int k = DataUtil::intFloor((w / pi2 * 360 + 45 + 15 * 360) / 30);  // 1984年立春起算的节气数(不含中气)
-    jd += pty_zty2(jd2 / 36525) + lng / radd / std::numbers::pi / 2;                     // 本地真太阳时(使用低精度算法计算时差)
+    jd += pty_zty2(jd2 / 36525) + lng / radd / std::numbers::pi / 2;         // 本地真太阳时(使用低精度算法计算时差)
 
     Bazi ob;
     ob.bz_zty = DataUtil::jd2hour(jd);

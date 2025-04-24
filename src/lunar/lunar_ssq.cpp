@@ -3,7 +3,6 @@
 #include <string>
 #include "eph/eph0.h"
 #include "lunar_ob.h"
-#include "mylib/tool.h"
 #include "util/DataUtil.h"
 
 using namespace sxwnl;
@@ -126,36 +125,36 @@ char *SSQ::jieya(int type)
     } else {
         str = qiS;
     }
-    string_replace(str, "J", "00");
-    string_replace(str, "I", "000");
-    string_replace(str, "H", "0000");
-    string_replace(str, "G", "00000");
-    string_replace(str, "t", "02");
-    string_replace(str, "s", "002");
-    string_replace(str, "r", "0002");
-    string_replace(str, "q", "00002");
-    string_replace(str, "p", "000002");
-    string_replace(str, "o", "0000002");
-    string_replace(str, "n", "00000002");
-    string_replace(str, "m", "000000002");
-    string_replace(str, "l", "0000000002");
-    string_replace(str, "k", "01");
-    string_replace(str, "j", "0101");
-    string_replace(str, "i", "001");
-    string_replace(str, "h", "001001");
-    string_replace(str, "g", "0001");
-    string_replace(str, "f", "00001");
-    string_replace(str, "e", "000001");
-    string_replace(str, "d", "0000001");
-    string_replace(str, "c", "00000001");
-    string_replace(str, "b", "000000001");
-    string_replace(str, "a", "0000000001");
-    string_replace(str, "F", o);
-    string_replace(str, "E", o2);
-    string_replace(str, "D", o3);
-    string_replace(str, "C", o4);
-    string_replace(str, "B", o5);
-    string_replace(str, "A", o6);
+    DataUtil::strReplace(str, "J", "00");
+    DataUtil::strReplace(str, "I", "000");
+    DataUtil::strReplace(str, "H", "0000");
+    DataUtil::strReplace(str, "G", "00000");
+    DataUtil::strReplace(str, "t", "02");
+    DataUtil::strReplace(str, "s", "002");
+    DataUtil::strReplace(str, "r", "0002");
+    DataUtil::strReplace(str, "q", "00002");
+    DataUtil::strReplace(str, "p", "000002");
+    DataUtil::strReplace(str, "o", "0000002");
+    DataUtil::strReplace(str, "n", "00000002");
+    DataUtil::strReplace(str, "m", "000000002");
+    DataUtil::strReplace(str, "l", "0000000002");
+    DataUtil::strReplace(str, "k", "01");
+    DataUtil::strReplace(str, "j", "0101");
+    DataUtil::strReplace(str, "i", "001");
+    DataUtil::strReplace(str, "h", "001001");
+    DataUtil::strReplace(str, "g", "0001");
+    DataUtil::strReplace(str, "f", "00001");
+    DataUtil::strReplace(str, "e", "000001");
+    DataUtil::strReplace(str, "d", "0000001");
+    DataUtil::strReplace(str, "c", "00000001");
+    DataUtil::strReplace(str, "b", "000000001");
+    DataUtil::strReplace(str, "a", "0000000001");
+    DataUtil::strReplace(str, "F", o);
+    DataUtil::strReplace(str, "E", o2);
+    DataUtil::strReplace(str, "D", o3);
+    DataUtil::strReplace(str, "C", o4);
+    DataUtil::strReplace(str, "B", o5);
+    DataUtil::strReplace(str, "A", o6);
     char *result = (char *)malloc(strlen(str.c_str()) + 1);
     strncpy(result, str.c_str(), str.size() + 1);
     return result;
@@ -232,7 +231,8 @@ int SSQ::calc(double jd, int qs)
             return floor(qi_high(floor((jd + pc - 2451259) / 365.2422 * 24) * std::numbers::pi / 12)
                          + 0.5);  // 2451259是1999.3.21,太阳视黄经为0,春分.定气计算
         else
-            return floor(so_high(floor((jd + pc - 2451551) / 29.5306) * std::numbers::pi * 2) + 0.5);  // 2451551是2000.1.7的那个朔日,黄经差为0.定朔计算
+            return floor(so_high(floor((jd + pc - 2451551) / 29.5306) * std::numbers::pi * 2)
+                         + 0.5);  // 2451551是2000.1.7的那个朔日,黄经差为0.定朔计算
     }
 
     if (jd >= f1 && jd < f2) {
@@ -258,8 +258,9 @@ int SSQ::calc(double jd, int qs)
                       + 0.5);                                           // 2451259是1999.3.21,太阳视黄经为0,春分.定气计算
             n = str_qs[DataUtil::intFloor((jd - f2) / 365.2422 * 24)];  // 找定气修正值
         } else {
-            D = floor(so_low(floor((jd + pc - 2451551) / 29.5306) * std::numbers::pi * 2) + 0.5);  // 2451551是2000.1.7的那个朔日,黄经差为0.定朔计算
-            n = str_qs[DataUtil::intFloor((jd - f2) / 29.5306)];                       // 找定朔修正值
+            D = floor(so_low(floor((jd + pc - 2451551) / 29.5306) * std::numbers::pi * 2)
+                      + 0.5);                                     // 2451551是2000.1.7的那个朔日,黄经差为0.定朔计算
+            n = str_qs[DataUtil::intFloor((jd - f2) / 29.5306)];  // 找定朔修正值
         }
         if (n == '1')
             return D + 1;
