@@ -9,7 +9,6 @@
 #include <cmath>
 #include <format>
 #include <iomanip>
-#include <numbers>
 #include <sstream>
 #include "util/TimeUtil.h"
 
@@ -41,51 +40,25 @@ std::string DataUtil::date2str(Date date)
 
 std::string DataUtil::rad2str(double radian, ANGLE_FORMAT format, int precision)
 {
-    bool negative = radian < 0;
-    radian = std::abs(radian);
-
-    // 单位转换
-    double converted = (format == ANGLE_FORMAT::TIME) ? (radian * 12 / std::numbers::pi) : (radian * 180.0 / std::numbers::pi);
-
-    // 分解各个分量
-    int a = std::floor(converted);
-    converted = (converted - a) * 60;
-    int b = std::floor(converted);
-    converted = (converted - b) * 60;
-    int c = std::floor(converted);
-    double remainder = converted - c;
-
-    // 处理进位
-    const int dec_num = std::pow(10, precision);
-    int decimal = std::round(remainder * dec_num);
-    if (decimal >= dec_num) {
-        decimal -= dec_num;
-        if (++c >= 60) {
-            c -= 60;
-            if (++b >= 60) {
-                b -= 60;
-                ++a;
-            }
-        }
-    }
-
-    // 构建字符串
-    const auto &units = ANGLE_FORMAT_STR[static_cast<int>(format)];
-    auto fmt_str = precision > 0 ? std::format("{:3d}{}{:02d}{}{:02d}.{:0{}d}{}", a, units[0], b, units[1], c, decimal, precision, units[2])
-                                 : std::format("{:3d}{}{:02d}{}{:02d}{}", a, units[0], b, units[1], c, units[2]);
-
-    // 替换空格为符号占位符
-    const auto pos = fmt_str.find_first_not_of(' ');
-    if (!negative) {
-        return fmt_str.substr(pos);
-    }
-
-    if (pos == std::string::npos) {
-        fmt_str.insert(0, "-");
+    char sign;
+    int result[4];
+    if (format == ANGLE_FORMAT::TIME) {
+        eraA2tf(precision, radian, &sign, result);
     } else {
-        fmt_str.replace(0, pos - 0, "-");
+        eraA2af(precision, radian, &sign, result);
     }
-    return fmt_str;
+
+    const auto &units = ANGLE_FORMAT_STR[static_cast<int>(format)];
+    std::stringstream ss;
+    ss << std::setfill('0');
+    ss << sign << result[0] << units[0] << std::setw(2) << result[1] << units[1] << std::setw(2) << result[2];
+    if (precision > 0) {
+        ss << "." << std::setw(precision) << result[3] << units[2];
+    } else {
+        ss << units[2];
+    }
+
+    return ss.str();
 }
 
 std::string DataUtil::s2min(double sec, int precision, ANGLE_FORMAT format)
