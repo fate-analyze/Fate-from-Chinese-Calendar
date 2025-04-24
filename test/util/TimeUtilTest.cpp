@@ -13,7 +13,7 @@ TEST_F(UTMain, date2Jd)
 {
     Date input {1970, 1, 1, 0, 0, 0};
     EXPECT_EQ(date2Jd(input), 2440587.5);
-    input = {1997, 1, 1, 0, 0, 0.5};
+    input = {1997, 1, 1, 0, 0, 0, 500};
     EXPECT_EQ(date2Jd(input), 2450449.5000057872);
 
     input = {2000, 1, 1, 0, 0, 0};
@@ -23,7 +23,7 @@ TEST_F(UTMain, date2Jd)
     input = {2000, 1, 1, 18, 0, 0};
     EXPECT_EQ(date2Jd(input), 2451545.25);
 
-    input = {2012, 1, 23, 6, 25, 7.1};
+    input = {2012, 1, 23, 6, 25, 7, 100};
     EXPECT_EQ(date2Jd(input), 2455949.767443287);
     input = {2012, 2, 29, 0, 0, 0};
     EXPECT_EQ(date2Jd(input), 2455986.5);
@@ -35,7 +35,7 @@ TEST_F(UTMain, jd2Date)
 {
     Date exp {1970, 1, 1, 0, 0, 0};
     EXPECT_EQ(jd2Date(2440587.5), exp);
-    exp = {1997, 1, 1, 0, 0, 0.5};
+    exp = {1997, 1, 1, 0, 0, 0, 500};
     EXPECT_EQ(jd2Date(2450449.5000057872), exp);
 
     exp = {2000, 1, 1, 0, 0, 0};
@@ -45,7 +45,7 @@ TEST_F(UTMain, jd2Date)
     exp = {2000, 1, 1, 18, 0, 0};
     EXPECT_EQ(jd2Date(2451545.25), exp);
 
-    exp = {2012, 1, 23, 6, 25, 7.1};
+    exp = {2012, 1, 23, 6, 25, 7, 100};
     EXPECT_EQ(jd2Date(2455949.767443287), exp);
     exp = {2012, 2, 29, 0, 0, 0};
     EXPECT_EQ(jd2Date(2455986.5), exp);

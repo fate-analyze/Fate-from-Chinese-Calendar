@@ -14,7 +14,6 @@ target_include_directories(${PROJECT_NAME}_ut PRIVATE
 target_link_libraries(${PROJECT_NAME}_ut PRIVATE
     ${PROJECT_NAME}_src
     GTest::GTest
-    GTest::Main
     pthread
 )
 

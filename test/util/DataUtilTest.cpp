@@ -12,16 +12,16 @@ using namespace sxwnl;
 
 TEST_F(UTMain, date2str)
 {
-    Date date {2023, 7, 12, 15, 30, 45.4};
+    Date date {2023, 7, 12, 15, 30, 45, 400};
     EXPECT_EQ(DataUtil::date2str(date), " 2023-07-12 15:30:45");
 
-    date = {2023, 7, 12, 15, 30, 59.6};
+    date = {2023, 7, 12, 15, 30, 59, 600};
     EXPECT_EQ(DataUtil::date2str(date), " 2023-07-12 15:31:00");
 
-    date = {2023, 7, 12, 15, 59, 59.6};
+    date = {2023, 7, 12, 15, 59, 59, 600};
     EXPECT_EQ(DataUtil::date2str(date), " 2023-07-12 16:00:00");
 
-    date = {5, 3, 8, 3, 7, 8.1};
+    date = {5, 3, 8, 3, 7, 8, 100};
     EXPECT_EQ(DataUtil::date2str(date), "    5-03-08 03:07:08");
 }
 

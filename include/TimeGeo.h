@@ -18,12 +18,13 @@ struct Date {
     int day_;
     int hour_;
     int min_;
-    double sec_;
+    int sec_;
+    int msec_;  // 毫秒
 
     bool operator==(const Date &other) const
     {
         return year_ == other.year_ && month_ == other.month_ && day_ == other.day_ && hour_ == other.hour_ && min_ == other.min_
-               && std::abs(sec_ - other.sec_) < 1e-3;
+               && sec_ == other.sec_;
     }
 };
 

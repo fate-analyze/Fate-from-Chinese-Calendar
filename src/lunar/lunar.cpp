@@ -18,7 +18,7 @@ OB_LUN yueLiCalc(int By, int Bm)
 {
     int i, j, D, xn;
     //日历物件初始化
-    Date JD = {By, Bm, 1, 12, 0, 0.1};
+    Date JD = {By, Bm, 1, 12, 0, 0, 100};
     const int Bd0 = DataUtil::intFloor(date2Jd(JD)) - J2000;  //公历月首,中午
     JD.month_++;
     if (JD.month_ > 12)

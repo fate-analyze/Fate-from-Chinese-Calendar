@@ -1,3 +1,10 @@
+// ===============================
+// Copyright (c) 2025 fate-analyze
+// File: Bazi.h
+// Updated: 2025/4/21
+// Author: xum
+// Description: 命理八字相关接口
+// ===============================
 #ifndef API_BAZI_H
 #define API_BAZI_H
 

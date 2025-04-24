@@ -5,6 +5,7 @@
 // Author: xum
 // ===============================
 #include "DataUtil.h"
+#include <erfa.h>
 #include <cmath>
 #include <format>
 #include <iomanip>
@@ -22,7 +23,7 @@ constexpr std::string_view ANGLE_FORMAT_STR[3][3] = {
 
 std::string DataUtil::date2str(Date date)
 {
-    int s = intFloor(date.sec_ + 0.5);
+    int s = intFloor(date.sec_ + (date.msec_ / 1000.0) + 0.5);
     int m = date.min_;
     int h = date.hour_;
 
