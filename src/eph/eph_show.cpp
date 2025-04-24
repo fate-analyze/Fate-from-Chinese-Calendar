@@ -3,6 +3,8 @@
 #include <iostream>
 #include <string>
 #include <unordered_map>
+
+#include "Bazi.h"
 #include "eph.h"
 #include "eph0.h"
 #include "eph_msc.h"
@@ -10,15 +12,15 @@
 #include "eph_rspl.h"
 #include "eph_szj.h"
 #include "eph_yspl.h"
-#include "mylib/lat_lon_data.h"
 #include "mylib/mystl/my_string.h"
+#include "TimeGeo.h"
 #include "util/DataUtil.h"
 
 namespace sxwnl {
 std::string rysCalc(Date d, bool is_utc, bool nasa_r)
 {
-    double vJ = jw.J / radd;
-    double vW = jw.W / radd;
+    double vJ = BJ_COORD.lng_ / radd;
+    double vW = BJ_COORD.lat_ / radd;
     double jd = date2Jd(d) - J2000;
     if (is_utc) {
         jd += -8 / 24.0 + dt_T(jd);
@@ -251,8 +253,8 @@ std::string rs2_jxb()
 std::string shengjiang(int y, int m, int d)
 {
     Date dt = {y, m, d, 12, 0, 0};
-    SZJ::L = jw.J / radd;  //设置站点参数
-    SZJ::fa = jw.W / radd;
+    SZJ::L = BJ_COORD.lng_ / radd;  //设置站点参数
+    SZJ::fa = BJ_COORD.lat_ / radd;
     double jd = date2Jd(dt) - J2000;  //取屏幕时间
     double sq = SZJ::L / pi2 * 24.0;
 
@@ -279,8 +281,8 @@ std::string shengjiang(int y, int m, int d)
 std::string shengjiang2(int y)
 {
     //太阳升降快算
-    double L = jw.J / radd;  //设置站点参数
-    double fa = jw.W / radd;
+    double L = BJ_COORD.lng_ / radd;  //设置站点参数
+    double fa = BJ_COORD.lat_ / radd;
     Date dt = {y, 1, 1, 12};
     double jd = date2Jd(dt) - J2000;  //取屏幕时间
     std::string s = "", s2 = "";

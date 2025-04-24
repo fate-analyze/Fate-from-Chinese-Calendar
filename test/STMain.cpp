@@ -141,8 +141,8 @@ void pCalc(int xt, Date dat, int n = 10, int dt = 1, bool Cd_ut = 1)
     double jd = date2Jd({dat.year_, dat.month_, dat.day_, dat.hour_, dat.min_, dat.sec_}) - J2000;  //取屏幕时间
     if (Cd_ut)
         jd += -8.0 / 24 + dt_T(jd);  //转为力学时
-    double L = jw.J / 180 * std::numbers::pi;    //地标
-    double fa = jw.W / 180 * std::numbers::pi;
+    double L = GeoCoord.lng_ / 180 * std::numbers::pi;    //地标
+    double fa = GeoCoord.lat_ / 180 * std::numbers::pi;
     if (n > 1000) {
         std::cout << "个数太多了" << std::endl;
         return;
@@ -293,7 +293,7 @@ void dingSuo_v()
 void ML_calc(Date dat)
 {
     double jd = date2Jd({dat.year_, dat.month_, dat.day_, dat.hour_, dat.min_, dat.sec_});
-    auto ob = jb2Bazi(dat, jw.J);  //八字计算
+    auto ob = jb2Bazi(dat, GeoCoord.lng_);  //八字计算
 
     std::cout << "\033[31;1m[日标]：\033[0m" << "公历 " << dat.year_ << "-" << dat.month_ << "-" << dat.day_ << " 儒略日数 "
               << DataUtil::intFloor(jd + 0.5) << " 距2000年首" << DataUtil::intFloor(jd + 0.5 - J2000) << "日\n"
