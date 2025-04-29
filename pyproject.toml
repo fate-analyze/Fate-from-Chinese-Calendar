@@ -1,0 +1,35 @@
+[project]
+name = "fate"
+version = "0.1.0"
+description = "Fate from Chineses Calendar"
+authors = [
+    {name = "simon852688@gmail.com"}
+]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "numpy (>=2.2.5,<3.0.0)",
+    "pyerfa (>=2.0.1.6,<3.0.0.0)",
+    "astropy (>=7.0.1,<8.0.0)",
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[[tool.poetry.source]]
+name = "liberfa"
+url = "https://pypi.anaconda.org/liberfa/simple"
+priority = "primary"
+
+
+[[tool.poetry.source]]
+name = "tuna"
+url = "https://mirrors.aliyun.com/pypi/simple/"
+priority = "primary"
+
+
+[tool.poetry.dependencies]
+pyerfa = {allow-prereleases = true, source = "liberfa"}
