@@ -44,6 +44,7 @@ test5
 .vs/*
 .idea/
 .github/
+time_lib/de441.bsp
 
 # cmake build path
 build

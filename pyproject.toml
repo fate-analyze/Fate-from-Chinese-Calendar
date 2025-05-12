@@ -9,9 +9,9 @@ license = {text = "MIT"}
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "numpy (>=2.2.5,<3.0.0)",
-    "pyerfa (>=2.0.1.6,<3.0.0.0)",
     "astropy (>=7.0.1,<8.0.0)",
+    "jplephem (>=2.22,<3.0)",
+    "skyfield (>=1.53,<2.0)",
 ]
 
 
@@ -32,4 +32,3 @@ priority = "primary"
 
 
 [tool.poetry.dependencies]
-pyerfa = {allow-prereleases = true, source = "liberfa"}

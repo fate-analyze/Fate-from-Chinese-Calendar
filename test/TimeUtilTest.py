@@ -1,6 +1,6 @@
 import unittest
-from algo_lib.DateTime import DateTime
-from algo_lib.TimeUtil import TimeUtil
+from time_lib.DateTime import DateTime
+from time_lib.TimeUtil import TimeUtil
 from datetime import timezone
 
 
@@ -74,6 +74,40 @@ class AstroTimeTestCase(unittest.TestCase):
 
         dt_2 = TimeUtil.julian_2_datetime(jd)
         self.assertEqual(dt, dt_2)
+
+    def test_jd_2_sun(self):
+        inst = TimeUtil()
+
+        # 2000年春分点视黄经接近0°
+        dt = DateTime(2000, 3, 20, 15, 35, 15, tz=timezone.utc)
+        lon, _ = inst.datetime_2_sun(dt, 116.48)
+        self.assertAlmostEqual(lon, 0, delta=0.1)
+
+        # 北京经度真太阳时比UTC+8早约14分钟
+        dt = DateTime(2000, 1, 1, 12, 0, 0, tz=timezone.utc)
+        jd = TimeUtil.datetime_2_julian(dt)
+        expected_jd = jd + 116.48 / 15 / 24
+        _, bj_jd = inst.datetime_2_sun(dt, 116.48)
+        self.assertAlmostEqual(bj_jd, expected_jd, delta=0.01)
+
+        # 和其它已知数据校验
+        dt = DateTime(2025, 5, 14, 9, 6, 0)
+        _, bj_jd = inst.datetime_2_sun(dt, 116.41) # 北京
+        expected_jd = TimeUtil.datetime_2_julian(dt)
+        expected_jd += 116.48 / 15 / 24
+        self.assertAlmostEqual(bj_jd, expected_jd, delta=0.01)
+
+        dt = DateTime(1949, 10, 1, 10, 0, 0)
+        _, bj_jd = inst.datetime_2_sun(dt, 84.86) # 新疆克拉玛依
+        expected_jd = TimeUtil.datetime_2_julian(dt)
+        expected_jd += 84.86 / 15 / 24
+        self.assertAlmostEqual(bj_jd, expected_jd, delta=0.01)
+
+        dt = DateTime(1590, 1, 1, 18, 30, 0)
+        lon, bj_jd = inst.datetime_2_sun(dt, 116.38)
+        expected_dt = DateTime(1590, 1, 1, 18, 11, 3, tz=timezone.utc)
+        expected_jd = TimeUtil.datetime_2_julian(expected_dt)
+        self.assertAlmostEqual(bj_jd, expected_jd, delta=0.1)
 
 
 if __name__ == '__main__':

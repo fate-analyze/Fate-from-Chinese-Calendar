@@ -1,6 +1,6 @@
 import unittest
 from datetime import timezone, timedelta
-from algo_lib.DateTime import DateTime
+from time_lib.DateTime import DateTime
 
 
 class TestDateTime(unittest.TestCase):
