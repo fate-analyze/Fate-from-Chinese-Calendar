@@ -5,6 +5,7 @@ from astropy.time import Time
 from datetime import timezone
 from skyfield.api import load
 from skyfield.framelib import ecliptic_frame
+from time_lib.Bazi import JieQiStrategy, JieQi, BaZi
 
 """
 星历离线下载说明：
@@ -80,3 +81,15 @@ class TimeUtil:
         delta_days = delta_hours / 24.0
         jd_true_solar = jd_utc + delta_days  # 真太阳时儒略日 = UTC儒略日 + 时差（自动处理跨日）
         return lon_ecliptic.degrees, jd_true_solar
+
+    def datetime_2_bazi(self, dt: DateTime, lng: float, strat: JieQiStrategy = JieQiStrategy.DING_QI) -> BaZi:
+        pass
+
+    def bazi_2_datetime(self, bazi: BaZi, lng: float, strat: JieQiStrategy) -> list[DateTime]:
+        pass
+
+    def ping_2_ding_qi(self, bazi: BaZi) -> BaZi:
+        """
+        将平气法的八字转为定气法的八字
+        """
+        pass
