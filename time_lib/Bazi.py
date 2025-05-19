@@ -1,4 +1,5 @@
 from enum import Enum
+from dataclasses import dataclass
 
 
 class JieQiStrategy(Enum):
@@ -61,6 +62,7 @@ class DiZhi(Enum):
     HAI = "亥"
 
 
+@dataclass
 class BaZi:
     def __init__(self, year1: TianGan, year2: DiZhi, month1: TianGan, month2: DiZhi, day1: TianGan, day2: DiZhi,
                  hour1: TianGan, hour2: DiZhi):

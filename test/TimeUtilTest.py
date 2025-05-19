@@ -1,6 +1,7 @@
 import unittest
 from time_lib.DateTime import DateTime
 from time_lib.TimeUtil import TimeUtil
+from time_lib.Bazi import BaZi, TianGan, DiZhi
 from datetime import timezone
 
 
@@ -92,22 +93,37 @@ class AstroTimeTestCase(unittest.TestCase):
 
         # 和其它已知数据校验
         dt = DateTime(2025, 5, 14, 9, 6, 0)
-        _, bj_jd = inst.datetime_2_sun(dt, 116.41) # 北京
+        _, bj_jd, _ = inst.datetime_2_sun(dt, 116.41)  # 北京
         expected_jd = TimeUtil.datetime_2_julian(dt)
         expected_jd += 116.48 / 15 / 24
         self.assertAlmostEqual(bj_jd, expected_jd, delta=0.01)
 
         dt = DateTime(1949, 10, 1, 10, 0, 0)
-        _, bj_jd = inst.datetime_2_sun(dt, 84.86) # 新疆克拉玛依
+        _, bj_jd, _ = inst.datetime_2_sun(dt, 84.86)  # 新疆克拉玛依
         expected_jd = TimeUtil.datetime_2_julian(dt)
         expected_jd += 84.86 / 15 / 24
         self.assertAlmostEqual(bj_jd, expected_jd, delta=0.01)
 
         dt = DateTime(1590, 1, 1, 18, 30, 0)
-        lon, bj_jd = inst.datetime_2_sun(dt, 116.38)
+        lon, bj_jd, _ = inst.datetime_2_sun(dt, 116.38)
         expected_dt = DateTime(1590, 1, 1, 18, 11, 3, tz=timezone.utc)
         expected_jd = TimeUtil.datetime_2_julian(expected_dt)
         self.assertAlmostEqual(bj_jd, expected_jd, delta=0.1)
+
+    def test_BaZi(self):
+        inst = TimeUtil()
+
+        """以下数据取自第三方排盘软件"""
+        dt = DateTime(2025, 5, 22, 20, 54, 0, 0)
+        bazi = inst.datetime_2_bazi(dt, 116.48)
+        expect = BaZi(TianGan.YI, DiZhi.SI, TianGan.XIN, DiZhi.SI, TianGan.XIN, DiZhi.MAO, TianGan.WU, DiZhi.XU)
+        self.assertEqual(bazi, expect)
+
+        # 闰月
+
+        # 年份分界
+
+        # 更早期
 
 
 if __name__ == '__main__':
